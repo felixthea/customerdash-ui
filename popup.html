@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <style>
+      body {
+        min-width: 357px;
+        overflow-x: hidden;
+      }
+
+      img {
+        margin: 5px;
+        border: 2px solid black;
+        vertical-align: middle;
+        width: 75px;
+        height: 75px;
+      }
+
+      .hidden{
+        display:none;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
+     -->
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.serializeJSON.min.js"></script>
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <span id="welcome"></span>
+    <button id="log-out">Log Out</button>
+    <form id="log-in">
+      <label for="user_email">Email:</label>
+      <input type="text" id="user_email" name="user[email]">
+      <br>
+      <label for="user_password">Password:</label>
+      <input type="password" id="user_password" name="user[password]">
+      <br>
+      <input type="submit" id='submit' value="submit">
+    </form>
+    <a href="#" id="stripe-customers-index">My Customers</a>
+    <div class="stripe-customers"></div>
+  </body>
+</html>
+
