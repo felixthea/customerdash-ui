@@ -1,32 +1,13 @@
 $(document).ready(function(){
-	// chrome.runtime.sendMessage({method:'from content.js'});
-
-	// chrome.runtime.onMessage.addListener(
- //  function(request, sender, sendResponse) {
- //  	var customerInfos = request.customerInfo;
- //    sendResponse({farewell: "got it"});
-
- //    var customer = $('span.gD').attr('email');
- //    $.each(customerInfos, function(idx, customerInfo){
- //    	if(customerInfo.email == customer){
- //    		console.log("found " + customerInfo.email);
- //    	} else {
- //    		console.log("only found " + customerInfo.email);
- //    	}
- //    })
-
- //  });
-	
 	window.setTimeout(function(){
 		var customerEmail = $('span.gD').attr('email');
-		console.log(customerEmail);
+		var port = chrome.runtime.connect({name: "knock"});
 
-		chrome.runtime.sendMessage({type: 'get_customer_by_email', email: customerEmail}, function(response){
-			console.log("in here");
-			console.log(response);
-			console.log(response.customer);
-		})
+		port.postMessage({customer: customerEmail});
+		port.postMessage({customer: "allison@gmail.co"})
+		port.onMessage.addListener(function(msg){
+			console.log(msg);
+		});
 	}, 3000);
-	
 	
 })

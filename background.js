@@ -17,35 +17,28 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
 		sendResponse({status: "successfully logged out"})
 	} else if (request.type == "get_session_token") {
 		sendResponse({session_token: savedSessionToken()});
-	} else if (request.type == "get_customer_by_email") {
-		sendResponse({customer: "Hello"})
-		retrieveCustomer(request.email)
-		.done(function(data){
-			sendResponse({customer: data});
-		})
 	};
 })
 
-function retrieveCustomer(customerEmail){
-  var request = $.ajax({
-    type: "GET",
-    url: API_BASE + "/customers/show",
-    data: {
-      "session_token": savedSessionToken(),
-      "customer_email": customerEmail
-    },
-    success: function(data,status,jqXHR){
-      console.log("console success");
-    },
-    error: function(jqXHR,textStatus,errorThrown){
-      console.log("console error");
-      console.log(jqXHR)
-      console.log(textStatus)
-      console.log(errorThrown)
-    }
-  })
+chrome.runtime.onConnect.addListener(function(port){
+	port.onMessage.addListener(function(msg){
+		var customerEmail = msg.customer;
 
-  return request;
+		retrieveCustomer(customerEmail)
+		.done(function(data){
+			port.postMessage(data);
+		})
+	})
+})
+
+function retrieveCustomer(customerEmail){
+	return $.get(
+		API_BASE + "/customers/show", 
+		{ 
+			"session_token": savedSessionToken(),
+			"customer_email": customerEmail
+		}
+	)
 };
 
 function saveSessionToken(sessionToken){
