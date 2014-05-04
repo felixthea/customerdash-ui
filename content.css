@@ -6,11 +6,55 @@ div#customer-dashboard{
   z-index: 9999;
   float: left;
   position: fixed;
-  margin: 20px;
-  padding: 5px;
-  top:0;
-  left:0;
-  background: red;
+  top:20px;
+  right:20px;
+  background: #2089ff;
   border: 1px solid black;
+  width: 250px;
+  height: 600px;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
+#customer-dashboard h1{
+  margin:0;
+  padding:0;
+  font-size: 28pt;
+  padding-top: 5px;
   text-align: center;
+}
+
+#customer-dashboard h2{
+  padding: 0;
+  margin: 2px;
+}
+
+#customer-dashboard ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#customer-dashboard .info-title{
+  font-weight: bold; 
+}
+
+#customer-dashboard #cd-header{
+  width: 250px;
+  height: 60px;
+  background: #444444;
+  margin: 0;
+  padding: 0;
+  color: #e4e4e4;
+  -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
+#customer-dashboard #cd-body{
+  padding: 5px;
+  height: 500px;
+  color: #e4e4e4;
 }
