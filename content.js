@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	chrome.runtime.sendMessage({method:'from content.js'});
+	// chrome.runtime.sendMessage({method:'from content.js'});
 
 	// chrome.runtime.onMessage.addListener(
  //  function(request, sender, sendResponse) {

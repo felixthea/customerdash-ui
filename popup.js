@@ -2,15 +2,16 @@ API_BASE = 'http://localhost:3000'
 
 document.addEventListener('DOMContentLoaded', function () {
   var $logInForm = $('form#log-in');
-  var savedSessionToken = savedSessionToken();
 
-  if (savedSessionToken !== null){
-    $logInForm.addClass('hidden');
-    $('button#log-out').removeClass('hidden');
-  } else {
-    $logInForm.removeClass('hidden');
-    $('button#log-out').addClass('hidden');
-  };
+  checkIfLoggedIn(function(loggedIn){
+    if (loggedIn){
+      $logInForm.addClass('hidden');
+      $('button#log-out').removeClass('hidden');
+    } else {
+      $logInForm.removeClass('hidden');
+      $('button#log-out').addClass('hidden');
+    }
+  });
 
   $('form#log-in').on('click', '#submit', function(event){
     event.preventDefault();
@@ -41,22 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(errorThrown)
       }
     })
-  })
-
-  function saveSessionToken(sessionToken){
-    window.localStorage.setItem('stripe-simple-cs', sessionToken)
-  };
-
-  function savedSessionToken(){
-    return window.localStorage.getItem('stripe-simple-cs');
-  };
+  });
 
   function hideLogInForm(){
     $('form#log-in').addClass('hidden');
-  };
-
-  function showAddWordsForm(){
-    $('form#add-words').removeClass('hidden');
   };
 
   function sendCustomerInfo(customerInfo) {
@@ -66,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   };
-  
+
   function retrieveCustomer(customerEmail){
     $.ajax({
       type: "GET",
@@ -86,11 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(errorThrown)
       }
     })
-  }
-
-  chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-    console.log(message.method);
-  })
+  };
 
   function logIn () {
     var form = $('form#log-in');
@@ -101,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
       data: formData,
       success: function(data,status,jqXHR){
         console.log("console success")
-        saveSessionToken(data["session_token"])
+        sendSessionTokenToBg(data["session_token"])
         $logInForm.addClass('hidden');
         $('button#log-out').removeClass('hidden');
       },
@@ -112,6 +97,18 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(errorThrown)
       }
     });
+  };
+
+  function sendSessionTokenToBg (sessionToken) {
+    chrome.runtime.sendMessage({type: "login", sessionToken: sessionToken}, function(response){
+      console.log(response);
+    })
+  };
+
+  function checkIfLoggedIn (callback) {
+    chrome.runtime.sendMessage({type: "logged_in?"}, function(response){
+      callback(response.log_in_status);
+    })
   };
 
   function logOut () {
