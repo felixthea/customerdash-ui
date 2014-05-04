@@ -4,7 +4,7 @@ console.log("in background");
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
 
-	requestMap = {
+	var requestMap = {
 		"login": function(){
 			saveSessionToken(request.sessionToken);
 			sendResponse({status: "successfully logged in"})
@@ -26,12 +26,26 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
 
 chrome.runtime.onConnect.addListener(function(port){
 	port.onMessage.addListener(function(msg){
-		var customerEmail = msg.customer;
 
-		retrieveCustomer(customerEmail)
-		.done(function(data){
-			port.postMessage(data);
-		})
+		var requestMap = {
+			"retrieve_customer": function(){
+				retrieveCustomer(msg.customerEmail)
+				.done(function(customer){
+					port.postMessage(customer);
+				})
+			},
+			"retrieve_customer_with_charges": function(){
+				retrieveCustomer(msg.customerEmail)
+				.done(function(customer){
+					retrieveChargeIndex(customer.id)
+					.done(function(charges){
+						port.postMessage(charges);
+					})
+				})
+			}
+		}
+
+		requestMap[msg.type]();
 	})
 })
 
@@ -41,6 +55,16 @@ function retrieveCustomer(customerEmail){
 		{ 
 			"session_token": savedSessionToken(),
 			"customer_email": customerEmail
+		}
+	)
+};
+
+function retrieveChargeIndex(customerId){
+	return $.get(
+		API_BASE + '/charges',
+		{
+			"session_token": savedSessionToken(),
+			"customer_id": customerId
 		}
 	)
 };
