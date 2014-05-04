@@ -39,7 +39,7 @@ chrome.runtime.onConnect.addListener(function(port){
 				.done(function(customer){
 					retrieveChargeIndex(customer.id)
 					.done(function(charges){
-						port.postMessage(charges);
+						port.postMessage({customer: customer, charges: charges});
 					})
 				})
 			}
