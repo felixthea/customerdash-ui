@@ -2,7 +2,7 @@ $(document).ready(function(){
 	$customerDashboard = $(
 		"<div id='customer-dashboard'> \
 			<div id='cd-header'><h1>Customer Dash</h1></div> \
-			<div id='cd-body'> \
+			<div id='cd-body' class='hidden'> \
 				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
 				<div id='customer-charges'><h2>Customer Charges</h2><div id='customer-charges-body'></div></div> \
 			</div> \
@@ -69,5 +69,9 @@ $(document).ready(function(){
 
 		return $ul;
 	}
+
+	$('#cd-header').on('click', function(event){
+		$('#cd-body').toggleClass('hidden');
+	})
 	
 })
