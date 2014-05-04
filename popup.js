@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
       data: formData,
       success: function(data,status,jqXHR){
         console.log("console success")
-        sendSessionTokenToBg(data["session_token"])
+        sendMessageToBg({type: "login", sessionToken: data["session_token"]});
         $logInForm.addClass('hidden');
         $('button#log-out').removeClass('hidden');
       },
@@ -99,11 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  function sendSessionTokenToBg (sessionToken) {
-    chrome.runtime.sendMessage({type: "login", sessionToken: sessionToken}, function(response){
+  function sendMessageToBg (msg) {
+    chrome.runtime.sendMessage(msg), function(response){
       console.log(response);
-    })
+    };
   };
+
+  function getSessionTokenFromBg (callback) {
+    chrome.runtime.sendMessage({type: "get_session_token"}, function(response){
+      callback(response.session_token);
+    })
+  }
 
   function checkIfLoggedIn (callback) {
     chrome.runtime.sendMessage({type: "logged_in?"}, function(response){
@@ -112,23 +118,23 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   function logOut () {
-    $.ajax({
-      type: "DELETE",
-      url: API_BASE + "/session/logout",
-      data: {"session_token": savedSessionToken()},
-      success: function(data,status,jqXHR){
-        console.log("logged out");
-        window.localStorage.removeItem('stripe-simple-cs');
-        $logInForm.removeClass('hidden');
-        $('button#log-out').addClass('hidden');
-      },
-      error: function(jqXHR, textStatus, errorThrown){
-        console.log(jqXHR)
-        console.log(textStatus)
-        console.log(errorThrown)
-        console.log("error in logging out");
-      }
+    getSessionTokenFromBg(function(session_token){
+      $.ajax({
+        type: "DELETE",
+        url: API_BASE + "/session/logout",
+        data: {"session_token": session_token},
+        success: function(data,status,jqXHR){
+          sendMessageToBg({type: "logout"})
+          $logInForm.removeClass('hidden');
+          $('button#log-out').addClass('hidden');
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+          console.log(jqXHR)
+          console.log(textStatus)
+          console.log(errorThrown)
+          console.log("error in logging out");
+        }
+      })
     })
   };
-
 });
