@@ -17,4 +17,16 @@ $(document).ready(function(){
 
  //  });
 	
+	window.setTimeout(function(){
+		var customerEmail = $('span.gD').attr('email');
+		console.log(customerEmail);
+
+		chrome.runtime.sendMessage({type: 'get_customer_by_email', email: customerEmail}, function(response){
+			console.log("in here");
+			console.log(response);
+			console.log(response.customer);
+		})
+	}, 3000);
+	
+	
 })

@@ -17,11 +17,17 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
 		sendResponse({status: "successfully logged out"})
 	} else if (request.type == "get_session_token") {
 		sendResponse({session_token: savedSessionToken()});
+	} else if (request.type == "get_customer_by_email") {
+		sendResponse({customer: "Hello"})
+		retrieveCustomer(request.email)
+		.done(function(data){
+			sendResponse({customer: data});
+		})
 	};
 })
 
 function retrieveCustomer(customerEmail){
-  $.ajax({
+  var request = $.ajax({
     type: "GET",
     url: API_BASE + "/customers/show",
     data: {
@@ -30,7 +36,6 @@ function retrieveCustomer(customerEmail){
     },
     success: function(data,status,jqXHR){
       console.log("console success");
-      console.log(data);
     },
     error: function(jqXHR,textStatus,errorThrown){
       console.log("console error");
@@ -39,6 +44,8 @@ function retrieveCustomer(customerEmail){
       console.log(errorThrown)
     }
   })
+
+  return request;
 };
 
 function saveSessionToken(sessionToken){
