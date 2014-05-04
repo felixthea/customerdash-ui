@@ -3,21 +3,25 @@ var API_BASE = 'http://localhost:3000';
 console.log("in background");
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
-	if (request.type == "login") {
-		saveSessionToken(request.sessionToken);
-		sendResponse({status: "successfully logged in"})
-	} else if (request.type == "logged_in?") {
-		if (savedSessionToken() !== null) {
-			sendResponse({log_in_status: true})
-		} else {
-			sendResponse({log_in_status: false})
+
+	requestMap = {
+		"login": function(){
+			saveSessionToken(request.sessionToken);
+			sendResponse({status: "successfully logged in"})
+		},
+		"logged_in?": function(){
+			savedSessionToken() !== null ? sendResponse({log_in_status: true}) : sendResponse({log_in_status: false})
+		},
+		"logout": function(){
+			removeSessionToken();
+			sendResponse({status: "successfully logged out"})
+		},
+		"get_session_token": function(){
+			sendResponse({session_token: savedSessionToken()});
 		}
-	} else if (request.type == "logout") {
-		removeSessionToken();
-		sendResponse({status: "successfully logged out"})
-	} else if (request.type == "get_session_token") {
-		sendResponse({session_token: savedSessionToken()});
-	};
+	}
+
+	requestMap[request.type]();
 })
 
 chrome.runtime.onConnect.addListener(function(port){
