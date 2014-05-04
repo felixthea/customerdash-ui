@@ -54,7 +54,13 @@ div#customer-dashboard{
 }
 
 #customer-dashboard #cd-body{
+  margin-top: 5px;
   padding: 5px;
   height: 500px;
   color: #e4e4e4;
+  overflow-y:auto;
+}
+
+#customer-dashboard .charge-info-list{
+  margin: 0 0 10px 0;
 }

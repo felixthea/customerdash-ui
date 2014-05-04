@@ -17,8 +17,12 @@ $(document).ready(function(){
 
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
-			var $ul = createCustomerInfo(data.customer);
-			$('#customer-info-body').append($ul);
+			// console.log(data);
+			var $customerInfoUl = createCustomerInfo(data.customer);
+			var $chargesInfoUl = createChargesInfo(data.charges.data);
+
+			$('#customer-info-body').append($customerInfoUl);
+			$('#customer-charges-body').append($chargesInfoUl);
 		});
 	}, 3000);
 
@@ -32,13 +36,38 @@ $(document).ready(function(){
 
 		$.each([email, created, discount, balance], function(idx, val){
 			$ul.append($('<li>' + val + '</li>'));
-		})
+		});
 
 		return $ul;
 	};
 
 	function createChargesInfo(charges) {
+		var $div = $('<div id="charges"></div>');
 
+		$.each(charges, function(idx, charge){
+			var $ul = createChargeInfo(charge);
+			$div.append($ul);
+		})
+
+		return $div;
 	};
+
+	function createChargeInfo(charge) {
+		var id = "<span class='info-title'>ID:</span> " + charge.id;
+		var created = "<span class='info-title'>Created:</span> " + Date(charge.created*1000);
+		var paid = "<span class='info-title'>Paid:</span> " + charge.paid;
+		var amount = "<span class='info-title'>Amount:</span> $" + charge.amount / 100.00;
+		var currency = "<span class='info-title'>Currency:</span> " + charge.currency;
+		var refunded = "<span class='info-title'>Refunded:</span> " + charge.refunded;
+
+		var $ul = $("<ul class='charge-info-list'></ul>");
+
+		$.each([id, created, paid, amount, currency, refunded], function(idx, val){
+			var $li = $("<li>" + val + "</li>");
+			$ul.append($li);
+		});
+
+		return $ul;
+	}
 	
 })
