@@ -3,6 +3,7 @@ $(document).ready(function(){
 		"<div id='customer-dashboard'> \
 			<div id='cd-header'><h1>Customer Dash</h1></div> \
 			<div id='cd-body' class='hidden'> \
+				<button id='query-customer'>Lookup Customer</button> \
 				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
 				<div id='customer-charges'><h2>Customer Charges</h2><div id='customer-charges-body'></div></div> \
 			</div> \
@@ -11,7 +12,12 @@ $(document).ready(function(){
 
 	$('body').prepend($customerDashboard);
 
-	window.setTimeout(function(){
+	$('#cd-body').on('click', 'button#query-customer', function(event){
+		event.preventDefault();
+
+		$('div#customer-info-body').html("");
+		$('div#customer-charges-body').html("");
+
 		var customerEmail = $('span[email]').attr('email');
 		var port = chrome.runtime.connect({name: "knock"});
 
@@ -23,7 +29,7 @@ $(document).ready(function(){
 			$('#customer-info-body').append($customerInfoUl);
 			$('#customer-charges-body').append($chargesInfoUl);
 		});
-	}, 3000);
+	});
 
 	function createCustomerInfo(customer) {
 		var email = "<span class='info-title'>Email:</span> " + customer.email;
