@@ -23,7 +23,6 @@ $(document).ready(function(){
 		$('div#customer-charges-body').html("");
 		$('#loading-icon').removeClass('hidden');
 
-		// var customerEmail = $('span[email]').attr('email');
 		var customerEmail = $('input#customer-email').val();
 		
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
