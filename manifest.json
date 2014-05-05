@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 
-	"name": "Stripe CS",
-	"description": "Simple Stripe customer service",
+	"name": "Customer Dash",
+	"description": "See your customer's order history when they send you a customer support email right in your Gmail account.",
 	"version": "0.1",
 
 	"permissions": [
