@@ -3,9 +3,10 @@ $(document).ready(function(){
 		"<div id='customer-dashboard'> \
 			<div id='cd-header'><h1>Customer Dash</h1></div> \
 			<div id='cd-body' class='hidden'> \
-				<input type='text' id='customer-email'> \
-				<button id='query-customer'>Lookup Customer</button> \
-				<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
+				<form id='query-customer'> \
+					<input type='text' id='customer-email'> \
+					<input type='submit' value='Lookup Customer'><span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span>\
+				</form> \
 				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
 				<div id='customer-charges'><h2>Customer Charges</h2><div id='customer-charges-body'></div></div> \
 			</div> \
@@ -16,7 +17,7 @@ $(document).ready(function(){
 
 	var port = chrome.runtime.connect({name: "knock"});
 
-	$('#cd-body').on('click', 'button#query-customer', function(event){
+	$('#cd-body').on('submit', 'form#query-customer', function(event){
 		event.preventDefault();
 
 		$('div#customer-info-body').html("");
