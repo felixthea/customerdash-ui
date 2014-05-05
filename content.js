@@ -3,7 +3,9 @@ $(document).ready(function(){
 		"<div id='customer-dashboard'> \
 			<div id='cd-header'><h1>Customer Dash</h1></div> \
 			<div id='cd-body' class='hidden'> \
+				<input type='text' id='customer-email'> \
 				<button id='query-customer'>Lookup Customer</button> \
+				<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
 				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
 				<div id='customer-charges'><h2>Customer Charges</h2><div id='customer-charges-body'></div></div> \
 			</div> \
@@ -19,18 +21,31 @@ $(document).ready(function(){
 
 		$('div#customer-info-body').html("");
 		$('div#customer-charges-body').html("");
+		$('#loading-icon').removeClass('hidden');
 
-		var customerEmail = $('span[email]').attr('email');
+		// var customerEmail = $('span[email]').attr('email');
+		var customerEmail = $('input#customer-email').val();
 		
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
-			var $customerInfoUl = createCustomerInfo(data.customer);
-			var $chargesInfoUl = createChargesInfo(data.charges.data);
 
-			$('#customer-info-body').append($customerInfoUl);
-			$('#customer-charges-body').append($chargesInfoUl);
+			$('#loading-icon').addClass('hidden');
+
+			if(data.customer !== undefined) {
+				var $customerInfoUl = createCustomerInfo(data.customer);
+				var $chargesInfoUl = createChargesInfo(data.charges.data);
+
+				updateBody({customer: $customerInfoUl, charges: $chargesInfoUl});
+			} else {
+				updateBody({customer: "No customer found", charges: "No charges found."});
+			}
 		});
 	});
+
+	function updateBody(obj){
+		$('#customer-info-body').html(obj.customer);
+		$('#customer-charges-body').html(obj.charges);
+	};
 
 	function createCustomerInfo(customer) {
 		var email = "<span class='info-title'>Email:</span> " + customer.email;
