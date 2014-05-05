@@ -12,6 +12,8 @@ $(document).ready(function(){
 
 	$('body').prepend($customerDashboard);
 
+	var port = chrome.runtime.connect({name: "knock"});
+
 	$('#cd-body').on('click', 'button#query-customer', function(event){
 		event.preventDefault();
 
@@ -19,8 +21,7 @@ $(document).ready(function(){
 		$('div#customer-charges-body').html("");
 
 		var customerEmail = $('span[email]').attr('email');
-		var port = chrome.runtime.connect({name: "knock"});
-
+		
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
 			var $customerInfoUl = createCustomerInfo(data.customer);
