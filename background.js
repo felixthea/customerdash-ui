@@ -40,14 +40,15 @@ chrome.runtime.onConnect.addListener(function(port){
 
 				.done(function(customer){
 
-					if (customer.status === 422) { return; }
-					
-					retrieveChargeIndex(customer.id)
+					if (customer.status === 422) { 
+						port.postMessage({customer: undefined})
+					} else {
+						retrieveChargeIndex(customer.id)
 
-					.done(function(charges){
-						port.postMessage({customer: customer, charges: charges});
-					});
-
+						.done(function(charges){
+							port.postMessage({customer: customer, charges: charges});
+						});
+					}
 				})
 			}
 		}
