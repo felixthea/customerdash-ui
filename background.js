@@ -35,12 +35,19 @@ chrome.runtime.onConnect.addListener(function(port){
 				})
 			},
 			"retrieve_customer_with_charges": function(){
+
 				retrieveCustomer(msg.customerEmail)
+
 				.done(function(customer){
+
+					if (customer.status === 422) { return; }
+					
 					retrieveChargeIndex(customer.id)
+
 					.done(function(charges){
 						port.postMessage({customer: customer, charges: charges});
-					})
+					});
+
 				})
 			}
 		}
