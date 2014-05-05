@@ -6,7 +6,7 @@ div#customer-dashboard{
   z-index: 9999;
   float: left;
   position: fixed;
-  top:20px;
+  top:110px;
   right:20px;
   background: #2089ff;
   border: 1px solid black;
