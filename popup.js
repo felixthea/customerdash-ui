@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   function logOut () {
-    console.log("here");
     getSessionTokenFromBg(function(session_token){
       $.ajax({
         type: "DELETE",
