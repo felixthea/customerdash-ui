@@ -34,7 +34,7 @@ chrome.runtime.onConnect.addListener(function(port){
 					port.postMessage(customer);
 				})
 			},
-			"retrieve_customer_with_charges": function(){
+			"retrieve_customer_with_orders": function(){
 
 				retrieveShopifyCustomer(msg.customerEmail)
 
@@ -43,7 +43,7 @@ chrome.runtime.onConnect.addListener(function(port){
 					if (customer.status === 422) { 
 						port.postMessage({customer: undefined})
 					} else {
-						retrieveShopifyChargeIndex(customer.id)
+						retrieveShopifyOrderIndex(customer.id)
 
 						.done(function(charges){
 							port.postMessage({customer: customer, charges: charges});
@@ -67,9 +67,9 @@ function retrieveStripeCustomer(customerEmail){
 	)
 };
 
-function retrieveStripeChargeIndex(customerId){
+function retrieveStripeOrderIndex(customerId){
 	return $.get(
-		API_BASE + '/charges/stripe/index',
+		API_BASE + '/orders/stripe/index',
 		{
 			"session_token": savedSessionToken(),
 			"customer_id": customerId
@@ -87,9 +87,9 @@ function retrieveShopifyCustomer(customerEmail){
 	)
 };
 
-function retrieveShopifyChargeIndex(customerId){
+function retrieveShopifyOrderIndex(customerId){
 	return $.get(
-		API_BASE + '/charges/shopify/index',
+		API_BASE + '/orders/shopify/index',
 		{
 			"session_token": savedSessionToken(),
 			"customer_id": customerId

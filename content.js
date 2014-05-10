@@ -26,7 +26,7 @@ $(document).ready(function(){
 
 		var customerEmail = $('input#customer-email').val();
 		
-		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
+		port.postMessage({type: "retrieve_customer_with_orders", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
 
 			$('#loading-icon').addClass('hidden');
@@ -50,16 +50,17 @@ $(document).ready(function(){
 	function createCustomerInfo(customer) {
 		console.log(customer);
 		var customerDate = new Date(customer.created_at);
-		var email = "<span class='info-title'>Email:</span> " + customer.email;
-		var created = "<span class='info-title'>Created:</span> " + customerDate.toDateString();
-		var note = "<span class='info-title'>Note:</span> " + customer.note;
-		var $ul = $('<ul id="customer-info-list"></ul>');
+		var email = "<td class='info-title'>Email:</td><td>" + customer.email + "</td>";
+		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
+		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
+
+		var $table = $('<table id="customer-info-list"></table>');
 
 		$.each([email, created, note], function(idx, val){
-			$ul.append($('<li>' + val + '</li>'));
+			$table.append($('<tr>' + val + '</tr>'));
 		});
 
-		return $ul;
+		return $table;
 	};
 
 	function createChargesInfo(charges) {
@@ -67,8 +68,8 @@ $(document).ready(function(){
 		var $div = $('<div id="charges"></div>');
 
 		$.each(charges, function(idx, charge){
-			var $ul = createChargeInfo(charge);
-			$div.append($ul);
+			var $table = createChargeInfo(charge);
+			$div.append($table);
 		})
 
 		return $div;
@@ -76,20 +77,20 @@ $(document).ready(function(){
 
 	function createChargeInfo(charge) {
 		var chargeDate = new Date(charge.created_at);
-		var id = "<span class='info-title'>ID:</span> " + charge.id;
-		var created = "<span class='info-title'>Bought On:</span> " + chargeDate.toDateString();
-		var subtotal_price = "<span class='info-title'>Subtotal:</span> $" + charge.subtotal_price;
-		var total_price = "<span class='info-title'>Total:</span> $" + charge.total_price;
-		var lineItems = "<span class='info-title'>Items:</span> " + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ");
+		var id = "<td class='info-title'>ID:</td><td>" + charge.id + "</td>";
+		var created = "<td class='info-title'>Date:</td><td>" + chargeDate.toDateString() + "</td>";
+		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + charge.subtotal_price + "</td>";
+		var total_price = "<td class='info-title'>Total:</td><td>$" + charge.total_price + "</td>";
+		var lineItems = "<td class='info-title'>Items:</td><td>" + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ") + "</td>";
 
-		var $ul = $("<ul class='charge-info-list'></ul>");
+		var $table = $("<table class='charge-info-list'></table>");
 
 		$.each([id, created, subtotal_price, total_price, lineItems], function(idx, val){
-			var $li = $("<li>" + val + "</li>");
-			$ul.append($li);
+			var $row = $("<tr>" + val + "</tr>");
+			$table.append($row);
 		});
 
-		return $ul;
+		return $table;
 	}
 
 	$('#cd-header').on('click', function(event){
