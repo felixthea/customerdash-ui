@@ -51,12 +51,10 @@ $(document).ready(function(){
 		console.log(customer);
 		var email = "<span class='info-title'>Email:</span> " + customer.email;
 		var created = "<span class='info-title'>Created:</span> " + Date(customer.created*1000);
-		var discount = "<span class='info-title'>Discount:</span> " + customer.discount;
-		var balance = "<span class='info-title'>Balance:</span> " + customer.balance;
-
+		var note = "<span class='info-title'>Note:</span> " + customer.note;
 		var $ul = $('<ul id="customer-info-list"></ul>');
 
-		$.each([email, created, discount, balance], function(idx, val){
+		$.each([email, created, note], function(idx, val){
 			$ul.append($('<li>' + val + '</li>'));
 		});
 
@@ -80,12 +78,11 @@ $(document).ready(function(){
 		var created = "<span class='info-title'>Bought On:</span> " + Date(charge.created*1000);
 		var subtotal_price = "<span class='info-title'>Subtotal:</span> $" + charge.subtotal_price;
 		var total_price = "<span class='info-title'>Total:</span> $" + charge.total_price;
-		var currency = "<span class='info-title'>Currency:</span> " + charge.currency;
 		var lineItems = "<span class='info-title'>Items:</span> " + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ");
 
 		var $ul = $("<ul class='charge-info-list'></ul>");
 
-		$.each([id, created, subtotal_price, total_price, currency, lineItems], function(idx, val){
+		$.each([id, created, subtotal_price, total_price, lineItems], function(idx, val){
 			var $li = $("<li>" + val + "</li>");
 			$ul.append($li);
 		});

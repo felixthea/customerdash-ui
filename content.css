@@ -8,7 +8,7 @@ div#customer-dashboard{
   position: fixed;
   top:110px;
   right:20px;
-  background: #2089ff;
+  background: #e5e5e5;
   border: 1px solid black;
   width: 250px;
   font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
@@ -60,7 +60,7 @@ div#customer-dashboard{
   margin-top: 5px;
   padding: 5px;
   height: 500px;
-  color: #e4e4e4;
+  color: #444444;
   overflow-y:auto;
 }
 
