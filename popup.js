@@ -24,58 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
     logOut();
   })
 
-  $('#stripe-customers-index').on('click', function(event){
-    event.preventDefault();
-
-    $.ajax({
-      type: "GET",
-      url: API_BASE + "/customers",
-      data: {session_token: savedSessionToken()},
-      success: function(data,status,jqXHR){
-        console.log("console success")
-        var customers = data.data;
-        sendCustomerInfo(customers);
-      },
-      error: function(jqXHR,textStatus,errorThrown){
-        console.log("console error");
-        console.log(jqXHR)
-        console.log(textStatus)
-        console.log(errorThrown)
-      }
-    })
-  });
 
   function hideLogInForm(){
     $('form#log-in').addClass('hidden');
-  };
-
-  function sendCustomerInfo(customerInfo) {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {customerInfo: customerInfo}, function(response) {
-        console.log(response);
-      });
-    });
-  };
-
-  function retrieveCustomer(customerEmail){
-    $.ajax({
-      type: "GET",
-      url: API_BASE + "/customers/show",
-      data: {
-        "session_token": savedSessionToken,
-        "customer_email": customerEmail
-      },
-      success: function(data,status,jqXHR){
-        console.log("console success");
-        console.log(data);
-      },
-      error: function(jqXHR,textStatus,errorThrown){
-        console.log("console error");
-        console.log(jqXHR)
-        console.log(textStatus)
-        console.log(errorThrown)
-      }
-    })
   };
 
   function logIn () {

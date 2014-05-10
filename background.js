@@ -1,7 +1,5 @@
 var API_BASE = 'http://localhost:3000';
 
-console.log("in background");
-
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
   	var requestMap = {
@@ -14,6 +12,7 @@ chrome.runtime.onMessage.addListener(
 			"retrieve_customer_with_orders": function(){
 				retrieveShopifyCustomer(msg.customerEmail)
 				.done(function(customer){
+					console.log(customer);
 					if (customer.status === 422) { 
 						sendResponse({customer: undefined});
 					} else {
@@ -22,8 +21,21 @@ chrome.runtime.onMessage.addListener(
 							sendResponse({customer: customer, orders: orders});
 						});
 					}
-
 				})
+			},
+			"login": function(){
+				saveSessionToken(msg.sessionToken);
+				sendResponse({status: "successfully logged in"})
+			},
+			"logged_in?": function(){
+				savedSessionToken() !== null ? sendResponse({log_in_status: true}) : sendResponse({log_in_status: false})
+			},
+			"logout": function(){
+				removeSessionToken();
+				sendResponse({status: "successfully logged out"})
+			},
+			"get_session_token": function(){
+				sendResponse({session_token: savedSessionToken()});
 			}
 		};
 
