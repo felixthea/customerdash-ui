@@ -2,6 +2,12 @@
 	display:none;
 }
 
+.group:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+
 div#customer-dashboard{
   z-index: 9999;
   float: left;
@@ -11,6 +17,7 @@ div#customer-dashboard{
   background: #e5e5e5;
   border: 1px solid black;
   width: 250px;
+  font-size: 14px;
   font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
   -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
@@ -28,6 +35,14 @@ div#customer-dashboard{
 #customer-dashboard h2{
   padding: 0;
   margin: 2px;
+  font-size: 16px;
+  background: #dbd6c5;
+  padding: 5px;
+  margin-left: -5px;
+  margin-right: -5px;
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
 }
 
 #customer-dashboard ul{
@@ -35,6 +50,17 @@ div#customer-dashboard{
   margin: 0;
   padding: 0;
 }
+
+#customer-dashboard input{
+  font-size: 14px;
+  width: 95%;
+  height: 20px;
+  margin: 5px 0 5px 0;
+}
+
+/*#customer-dashboard input#submit, #customer-dashboard input#customer-email{
+  float: left;
+}*/
 
 #customer-dashboard .info-title{
   font-weight: bold; 
@@ -46,7 +72,7 @@ div#customer-dashboard{
   background: #444444;
   margin: 0;
   padding: 0;
-  color: #e4e4e4;
+  color: #dbd6c5;
   -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
@@ -58,12 +84,44 @@ div#customer-dashboard{
 
 #customer-dashboard #cd-body{
   margin-top: 5px;
-  padding: 5px;
+  /*padding: 5px;*/
   height: 500px;
   color: #444444;
   overflow-y:auto;
+  background: white;
+  overflow-x:hidden;
 }
 
-#customer-dashboard .charge-info-list{
-  margin: 0 0 10px 0;
+#customer-dashboard .order-info-list{
+  padding: 5px 0 5px 0;
+  width: 100%;
+  border-bottom: 1px solid #9C9A9B;
+}
+
+#customer-dashboard .order-info-list:last-child{
+  border:none;
+}
+
+#customer-dashboard #customer-info, #customer-dashboard #orders{
+  background: #F2F2F0;
+}
+
+#customer-dashboard #info-container{
+  padding: 0px 5px 0 5px;
+  background: white;
+}
+
+#customer-dashboard form#query-customer{
+  text-align: center;
+}
+
+#customer-dashboard #customer-info-list{
+  width: 240px;
+}
+
+.ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
 }

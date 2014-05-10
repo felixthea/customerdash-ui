@@ -1,15 +1,17 @@
 $(document).ready(function(){
 	$customerDashboard = $(
 		"<div id='customer-dashboard'> \
-			<div id='cd-header'><h1>Customer Dash</h1></div> \
-			<div id='cd-body' class='hidden'> \
-				<form id='query-customer'> \
-					<input type='text' id='customer-email'> \
-					<input type='submit' value='Lookup Customer'><span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span>\
-				</form> \
-				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
-				<div id='customer-orders'><h2>Customer Orders</h2><div id='customer-orders-body'></div></div> \
-			</div> \
+				<div id='cd-header'><h1>Customer Dash</h1></div> \
+				<div id='cd-body' class='hidden'> \
+					<div id='info-container'> \
+						<h2>Search <span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span></h2> \
+						<form id='query-customer' class='group'> \
+							<input type='text' id='customer-email' placeholder='Enter customer email address'> \
+						</form> \
+						<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
+						<div id='customer-orders'><h2>Customer Orders</h2><div id='customer-orders-body'></div></div> \
+					</div> \
+				</div> \
 		</div>"
 	)
 
@@ -47,7 +49,7 @@ $(document).ready(function(){
 		console.log(customer);
 		var customerDate = new Date(customer.created_at);
 		var name = "<td class='info-title'>Name:</td><td>" + customer.first_name + " " + customer.last_name + "</td>";
-		var email = "<td class='info-title'>Email:</td><td>" + customer.email + "</td>";
+		var email = "<td class='info-title'>Email:</td><td><span class='ellipsis' style='width:170px;'>" + customer.email + "</span></td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
 		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
 		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
@@ -86,7 +88,7 @@ $(document).ready(function(){
 		var lineItems = "<td class='info-title'>Items:</td><td>" + items.join('<br>') + "</td>";
 		var fullfillmentStatus = "<td class='info-title'>Status:</td><td>" + order.fullfillment_status + "</td>";
 
-		var $table = $("<table class='charge-info-list'></table>");
+		var $table = $("<table class='order-info-list'></table>");
 
 		$.each([id, created, subtotal_price, totalPrice, lineItems, fullfillmentStatus], function(idx, val){
 			var $row = $("<tr>" + val + "</tr>");
@@ -98,6 +100,7 @@ $(document).ready(function(){
 
 	$('#cd-header').on('click', function(event){
 		$('#cd-body').toggleClass('hidden');
+		$('input#customer-email').focus();
 	})
 	
 })
