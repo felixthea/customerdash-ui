@@ -32,7 +32,26 @@ div#customer-dashboard{
   text-align: center;
 }
 
-#customer-dashboard h2{
+#customer-dashboard input#submit{
+  background: #BA6A5D;
+  border: 1px solid #9C9A9B;
+  color: #FAFFBD;
+  width: 100px;
+  height: 30px;
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+}
+
+#customer-dashboard a#log-out{
+  text-decoration: none;
+  color: #9C9A9B;
+  font-size: 14px;
+  font-weight: none;
+  margin-right: 5px;
+}
+
+#customer-dashboard h2, #customer-dashboard #search-container{
   padding: 0;
   margin: 2px;
   font-size: 16px;
@@ -40,6 +59,7 @@ div#customer-dashboard{
   padding: 5px;
   margin-left: -5px;
   margin-right: -5px;
+  font-weight: bold;
   -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
   box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
@@ -58,9 +78,9 @@ div#customer-dashboard{
   margin: 5px 0 5px 0;
 }
 
-/*#customer-dashboard input#submit, #customer-dashboard input#customer-email{
-  float: left;
-}*/
+#customer-dashboard input#customer-email{
+  background: #FAFFBD;
+}
 
 #customer-dashboard .info-title{
   font-weight: bold; 
@@ -113,4 +133,18 @@ div#customer-dashboard{
 
 #customer-dashboard form#query-customer{
   text-align: center;
+}
+
+#customer-dashboard #sc-left{
+  float: left;
+}
+
+#customer-dashboard #sc-right{
+  float: right;
+}
+
+#customer-dashboard div#log-in{
+  background: #F2F2F0;
+  height: 470px;
+  padding: 0 5px 0 5px;
 }

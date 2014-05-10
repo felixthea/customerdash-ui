@@ -6,9 +6,8 @@ $(document).ready(function(){
 				<div id='cd-header'><h1>Customer Dash</h1></div> \
 				<div id='cd-body' class='hidden'> \
 					<div id='info-container'> \
-						<h2>Sign In</h2> \
+						<h2 id='sign-in'>Sign In</h2> \
 						<div id='log-in'> \
-					    <button id='log-out' class='hidden'>Log Out</button> \
 					    <form id='log-in'> \
 					      <label for='user_email'>Email:</label> \
 					      <input type='text' id='user_email' name='user[email]'> \
@@ -16,16 +15,24 @@ $(document).ready(function(){
 					      <label for='user_password'>Password:</label> \
 					      <input type='password' id='user_password' name='user[password]'> \
 					      <br> \
-					      <input type='submit' id='submit' value='submit'> \
+					      <input type='submit' id='submit' value='Sign In'> \
 					    </form> \
 						</div> \
 						<div id='info' class='hidden'> \
-							<h2>Search <span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span></h2> \
+							<div id='search-container' class='group'> \
+								<div id='sc-left'> \
+									Search \
+									<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
+								</div> \
+								<div id='sc-right'> \
+									<a href='#' id='log-out'>Log Out</a> \
+								</div> \
+							</div> \
 							<form id='query-customer' class='group'> \
 								<input type='text' id='customer-email' placeholder='Enter customer email address'> \
 							</form> \
-							<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
-							<div id='customer-orders'><h2>Customer Orders</h2><div id='customer-orders-body'></div></div> \
+							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
+							<div id='customer-orders'><h2>Orders</h2><div id='customer-orders-body'></div></div> \
 						</div> \
 					</div> \
 				</div> \
@@ -34,11 +41,17 @@ $(document).ready(function(){
 
 	$('body').prepend($customerDashboard);
 
+	var $logInForm = $('#customer-dashboard form#log-in');
+	var $logOutLink = $('#customer-dashboard a#log-out');
+	var $customerDashInfo = $('#customer-dashboard #info');
+	var $logInHeader = $('#customer-dashboard h2#sign-in');
+	var $logInDiv = $('#customer-dashboard div#log-in');
+	var $searchForm = $('#customer-dashboard form#query-customer');
+
 	$('#cd-body').on('submit', 'form#query-customer', function(event){
 		event.preventDefault();
 
-		$('div#customer-info-body').html("");
-		$('div#customer-orders-body').html("");
+		clearBody();
 		$('#loading-icon').removeClass('hidden');
 
 		var customerEmail = $('input#customer-email').val();
@@ -65,6 +78,11 @@ $(document).ready(function(){
 		$('#customer-info-body').html(obj.customer);
 		$('#customer-orders-body').html(obj.orders);
 	};
+
+	function clearBody(){
+		$('div#customer-info-body').html("");
+		$('div#customer-orders-body').html("");
+	}
 
 	function createCustomerInfo(customer) {
 		console.log(customer);
@@ -124,10 +142,6 @@ $(document).ready(function(){
 		$('input#customer-email').focus();
 	});
 
-	var $logInForm = $('#customer-dashboard form#log-in');
-	var $logOutButton = $('#customer-dashboard button#log-out');
-	var $customerDashInfo = $('#customer-dashboard #info')
-
   checkIfLoggedIn(function(loggedIn){
     if (loggedIn){
     	setLoggedInState();
@@ -141,7 +155,7 @@ $(document).ready(function(){
     logIn();
   })
 
-  $('button#log-out').on('click', function(event){
+  $('a#log-out').on('click', function(event){
     event.preventDefault();
     logOut();
   });
@@ -182,14 +196,20 @@ $(document).ready(function(){
 
   function setLoggedInState() {
   	$logInForm.addClass('hidden');
-    $logOutButton.removeClass('hidden');
+    $logOutLink.removeClass('hidden');
     $customerDashInfo.removeClass('hidden');
+    $logInHeader.addClass('hidden');
+    $logInDiv.addClass('hidden');
   };
 
   function setLoggedOutState() {
   	$logInForm.removeClass('hidden');
-    $logOutButton.addClass('hidden');
+    $logOutLink.addClass('hidden');
     $customerDashInfo.addClass('hidden');
+    $logInHeader.removeClass('hidden');
+    $logInDiv.removeClass('hidden');
+    $searchForm[0].reset();
+    clearBody();
   };
 
   function getSessionTokenFromBg (callback) {
