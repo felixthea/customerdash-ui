@@ -29,11 +29,15 @@ $(document).ready(function(){
 		chrome.runtime.sendMessage({type: "retrieve_customer_with_orders", customerEmail: customerEmail}, function(data) {
 		  $('#loading-icon').addClass('hidden');
 
-			if(data.customer !== undefined) {
-				var $customerInfoUl = createCustomerInfo(data.customer);
-				var $ordersInfoUl = createOrdersInfo(data.orders);
+			if(data.customer !== undefined && data.orders.length > 0) {
+				var $customerInfoTable = createCustomerInfo(data.customer);
+				var $ordersInfoTable = createOrdersInfo(data.orders);
 
-				updateBody({customer: $customerInfoUl, orders: $ordersInfoUl});
+				updateBody({customer: $customerInfoTable, orders: $ordersInfoTable});
+			} else if (data.customer !== undefined) {
+				var $customerInfoTable = createCustomerInfo(data.customer);
+
+				updateBody({customer: $customerInfoTable, orders: "No orders found."})
 			} else {
 				updateBody({customer: "No customer found", orders: "No orders found."});
 			}
@@ -49,7 +53,7 @@ $(document).ready(function(){
 		console.log(customer);
 		var customerDate = new Date(customer.created_at);
 		var name = "<td class='info-title'>Name:</td><td>" + customer.first_name + " " + customer.last_name + "</td>";
-		var email = "<td class='info-title'>Email:</td><td><span class='ellipsis' style='width:170px;'>" + customer.email + "</span></td>";
+		var email = "<td class='info-title'>Email:</td><td class='truncate'>" + customer.email + "</td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
 		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
 		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
