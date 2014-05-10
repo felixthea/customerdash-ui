@@ -28,6 +28,7 @@ $(document).ready(function(){
 		
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
+			console.log(data);
 
 			$('#loading-icon').addClass('hidden');
 

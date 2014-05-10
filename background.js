@@ -29,21 +29,21 @@ chrome.runtime.onConnect.addListener(function(port){
 
 		var requestMap = {
 			"retrieve_customer": function(){
-				retrieveCustomer(msg.customerEmail)
+				retrieveShopifyCustomer(msg.customerEmail)
 				.done(function(customer){
 					port.postMessage(customer);
 				})
 			},
 			"retrieve_customer_with_charges": function(){
 
-				retrieveCustomer(msg.customerEmail)
+				retrieveShopifyCustomer(msg.customerEmail)
 
 				.done(function(customer){
 
 					if (customer.status === 422) { 
 						port.postMessage({customer: undefined})
 					} else {
-						retrieveChargeIndex(customer.id)
+						retrieveShopifyChargeIndex(customer.id)
 
 						.done(function(charges){
 							port.postMessage({customer: customer, charges: charges});
@@ -57,9 +57,9 @@ chrome.runtime.onConnect.addListener(function(port){
 	})
 })
 
-function retrieveCustomer(customerEmail){
+function retrieveStripeCustomer(customerEmail){
 	return $.get(
-		API_BASE + "/customers/show", 
+		API_BASE + "/customers/stripe/show", 
 		{ 
 			"session_token": savedSessionToken(),
 			"customer_email": customerEmail
@@ -67,9 +67,29 @@ function retrieveCustomer(customerEmail){
 	)
 };
 
-function retrieveChargeIndex(customerId){
+function retrieveStripeChargeIndex(customerId){
 	return $.get(
-		API_BASE + '/charges',
+		API_BASE + '/charges/stripe/index',
+		{
+			"session_token": savedSessionToken(),
+			"customer_id": customerId
+		}
+	)
+};
+
+function retrieveShopifyCustomer(customerEmail){
+	return $.get(
+		API_BASE + "/customers/shopify/show",
+		{
+			"session_token": savedSessionToken(),
+			"customer_email": customerEmail
+		}
+	)
+};
+
+function retrieveShopifyChargeIndex(customerId){
+	return $.get(
+		API_BASE + '/charges/shopify/index',
 		{
 			"session_token": savedSessionToken(),
 			"customer_id": customerId
