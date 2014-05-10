@@ -49,8 +49,9 @@ $(document).ready(function(){
 
 	function createCustomerInfo(customer) {
 		console.log(customer);
+		var customerDate = new Date(customer.created_at);
 		var email = "<span class='info-title'>Email:</span> " + customer.email;
-		var created = "<span class='info-title'>Created:</span> " + Date(customer.created*1000);
+		var created = "<span class='info-title'>Created:</span> " + customerDate.toDateString();
 		var note = "<span class='info-title'>Note:</span> " + customer.note;
 		var $ul = $('<ul id="customer-info-list"></ul>');
 
@@ -74,8 +75,9 @@ $(document).ready(function(){
 	};
 
 	function createChargeInfo(charge) {
+		var chargeDate = new Date(charge.created_at);
 		var id = "<span class='info-title'>ID:</span> " + charge.id;
-		var created = "<span class='info-title'>Bought On:</span> " + Date(charge.created*1000);
+		var created = "<span class='info-title'>Bought On:</span> " + chargeDate.toDateString();
 		var subtotal_price = "<span class='info-title'>Subtotal:</span> $" + charge.subtotal_price;
 		var total_price = "<span class='info-title'>Total:</span> $" + charge.total_price;
 		var lineItems = "<span class='info-title'>Items:</span> " + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ");
