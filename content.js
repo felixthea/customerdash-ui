@@ -28,13 +28,12 @@ $(document).ready(function(){
 		
 		port.postMessage({type: "retrieve_customer_with_charges", customerEmail: customerEmail});
 		port.onMessage.addListener(function(data){
-			console.log(data);
 
 			$('#loading-icon').addClass('hidden');
 
 			if(data.customer !== undefined) {
 				var $customerInfoUl = createCustomerInfo(data.customer);
-				var $chargesInfoUl = createChargesInfo(data.charges.data);
+				var $chargesInfoUl = createChargesInfo(data.charges);
 
 				updateBody({customer: $customerInfoUl, charges: $chargesInfoUl});
 			} else {
@@ -49,6 +48,7 @@ $(document).ready(function(){
 	};
 
 	function createCustomerInfo(customer) {
+		console.log(customer);
 		var email = "<span class='info-title'>Email:</span> " + customer.email;
 		var created = "<span class='info-title'>Created:</span> " + Date(customer.created*1000);
 		var discount = "<span class='info-title'>Discount:</span> " + customer.discount;
@@ -64,6 +64,7 @@ $(document).ready(function(){
 	};
 
 	function createChargesInfo(charges) {
+		console.log(charges);
 		var $div = $('<div id="charges"></div>');
 
 		$.each(charges, function(idx, charge){
@@ -76,15 +77,15 @@ $(document).ready(function(){
 
 	function createChargeInfo(charge) {
 		var id = "<span class='info-title'>ID:</span> " + charge.id;
-		var created = "<span class='info-title'>Created:</span> " + Date(charge.created*1000);
-		var paid = "<span class='info-title'>Paid:</span> " + charge.paid;
-		var amount = "<span class='info-title'>Amount:</span> $" + charge.amount / 100.00;
+		var created = "<span class='info-title'>Bought On:</span> " + Date(charge.created*1000);
+		var subtotal_price = "<span class='info-title'>Subtotal:</span> $" + charge.subtotal_price;
+		var total_price = "<span class='info-title'>Total:</span> $" + charge.total_price;
 		var currency = "<span class='info-title'>Currency:</span> " + charge.currency;
-		var refunded = "<span class='info-title'>Refunded:</span> " + charge.refunded;
+		var lineItems = "<span class='info-title'>Items:</span> " + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ");
 
 		var $ul = $("<ul class='charge-info-list'></ul>");
 
-		$.each([id, created, paid, amount, currency, refunded], function(idx, val){
+		$.each([id, created, subtotal_price, total_price, currency, lineItems], function(idx, val){
 			var $li = $("<li>" + val + "</li>");
 			$ul.append($li);
 		});
