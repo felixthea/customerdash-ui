@@ -50,13 +50,15 @@ $(document).ready(function(){
 	function createCustomerInfo(customer) {
 		console.log(customer);
 		var customerDate = new Date(customer.created_at);
+		var name = "<td class='info-title'>Name:</td><td>" + customer.first_name + " " + customer.last_name + "</td>";
 		var email = "<td class='info-title'>Email:</td><td>" + customer.email + "</td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
 		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
-
+		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
+		var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
 		var $table = $('<table id="customer-info-list"></table>');
 
-		$.each([email, created, note], function(idx, val){
+		$.each([name, email, created, note, lifetimeSpent, lifetimeOrderCount], function(idx, val){
 			$table.append($('<tr>' + val + '</tr>'));
 		});
 
@@ -77,15 +79,20 @@ $(document).ready(function(){
 
 	function createOrderInfo(order) {
 		var orderDate = new Date(order.created_at);
+		var items = $.map(order.line_items, function(item, idx){
+			return item.name + " (" + item.quantity + ")";
+		});
+
 		var id = "<td class='info-title'>ID:</td><td><a href='" + order.url + "'>" + order.id + "</a></td>";
 		var created = "<td class='info-title'>Date:</td><td>" + orderDate.toDateString() + "</td>";
 		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + order.subtotal_price + "</td>";
 		var totalPrice = "<td class='info-title'>Total:</td><td>$" + order.total_price + "</td>";
-		var lineItems = "<td class='info-title'>Items:</td><td>" + $.map(order.line_items, function(item, idx) { return item.name; }).join(", ") + "</td>";
+		var lineItems = "<td class='info-title'>Items:</td><td>" + items.join('<br>') + "</td>";
+		var fullfillmentStatus = "<td class='info-title'>Status:</td><td>" + order.fullfillment_status + "</td>";
 
 		var $table = $("<table class='charge-info-list'></table>");
 
-		$.each([id, created, subtotal_price, totalPrice, lineItems], function(idx, val){
+		$.each([id, created, subtotal_price, totalPrice, lineItems, fullfillmentStatus], function(idx, val){
 			var $row = $("<tr>" + val + "</tr>");
 			$table.append($row);
 		});
