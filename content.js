@@ -15,8 +15,6 @@ $(document).ready(function(){
 
 	$('body').prepend($customerDashboard);
 
-	var port = chrome.runtime.connect({name: "knock"});
-
 	$('#cd-body').on('submit', 'form#query-customer', function(event){
 		event.preventDefault();
 
@@ -25,11 +23,9 @@ $(document).ready(function(){
 		$('#loading-icon').removeClass('hidden');
 
 		var customerEmail = $('input#customer-email').val();
-		
-		port.postMessage({type: "retrieve_customer_with_orders", customerEmail: customerEmail});
-		port.onMessage.addListener(function(data){
 
-			$('#loading-icon').addClass('hidden');
+		chrome.runtime.sendMessage({type: "retrieve_customer_with_orders", customerEmail: customerEmail}, function(data) {
+		  $('#loading-icon').addClass('hidden');
 
 			if(data.customer !== undefined) {
 				var $customerInfoUl = createCustomerInfo(data.customer);

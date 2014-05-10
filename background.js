@@ -2,60 +2,35 @@ var API_BASE = 'http://localhost:3000';
 
 console.log("in background");
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
-
-	var requestMap = {
-		"login": function(){
-			saveSessionToken(request.sessionToken);
-			sendResponse({status: "successfully logged in"})
-		},
-		"logged_in?": function(){
-			savedSessionToken() !== null ? sendResponse({log_in_status: true}) : sendResponse({log_in_status: false})
-		},
-		"logout": function(){
-			removeSessionToken();
-			sendResponse({status: "successfully logged out"})
-		},
-		"get_session_token": function(){
-			sendResponse({session_token: savedSessionToken()});
-		}
-	}
-
-	requestMap[request.type]();
-})
-
-chrome.runtime.onConnect.addListener(function(port){
-	port.onMessage.addListener(function(msg){
-
-		var requestMap = {
+chrome.runtime.onMessage.addListener(
+  function(msg, sender, sendResponse) {
+  	var requestMap = {
 			"retrieve_customer": function(){
 				retrieveShopifyCustomer(msg.customerEmail)
 				.done(function(customer){
-					port.postMessage(customer);
+					sendResponse(customer);
 				})
 			},
 			"retrieve_customer_with_orders": function(){
-
 				retrieveShopifyCustomer(msg.customerEmail)
-
 				.done(function(customer){
-
 					if (customer.status === 422) { 
-						port.postMessage({customer: undefined})
+						sendResponse({customer: undefined});
 					} else {
 						retrieveShopifyOrderIndex(customer.id)
-
 						.done(function(orders){
-							port.postMessage({customer: customer, orders: orders});
+							sendResponse({customer: customer, orders: orders});
 						});
 					}
+
 				})
 			}
-		}
+		};
 
-		requestMap[msg.type]();
-	})
-})
+  	requestMap[msg.type]()
+  	return true;
+  }
+);
 
 function retrieveStripeCustomer(customerEmail){
 	return $.get(
