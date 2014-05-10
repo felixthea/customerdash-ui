@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
       $logInForm.addClass('hidden');
       $('button#log-out').removeClass('hidden');
     } else {
+      // logged out
       $logInForm.removeClass('hidden');
       $('button#log-out').addClass('hidden');
     }
