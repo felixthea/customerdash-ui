@@ -2,9 +2,9 @@ $(document).ready(function(){
 	var API_BASE = 'http://localhost:3000';
 
 	$customerDashboard = $(
-		"<div id='customer-dashboard'> \
+		"<div id='customer-dashboard' class='hidden'> \
 				<div id='cd-header'><h1>Customer Dash</h1></div> \
-				<div id='cd-body' class='hidden'> \
+				<div id='cd-body'> \
 					<div id='info-container'> \
 						<h2 id='sign-in'>Sign In</h2> \
 						<div id='log-in'> \
@@ -37,10 +37,10 @@ $(document).ready(function(){
 					</div> \
 				</div> \
 		</div>"
-	)
+	);
 
 	$('body').prepend($customerDashboard);
-
+	
 	var $logInForm = $('#customer-dashboard form#log-in');
 	var $logOutLink = $('#customer-dashboard a#log-out');
 	var $customerDashInfo = $('#customer-dashboard #info');
@@ -229,5 +229,10 @@ $(document).ready(function(){
       callback(response.log_in_status);
     })
   };
-	
+
+  chrome.runtime.onMessage.addListener(function(msg, sender, response){
+  	if (msg.message == "toggle customer dash") {
+  		$('div#customer-dashboard').toggleClass('hidden');
+  	}
+  })
 })

@@ -95,3 +95,9 @@ function removeSessionToken() {
 function savedSessionToken(){
   return window.localStorage.getItem('stripe-simple-cs');
 };
+
+chrome.browserAction.onClicked.addListener(function(tab){
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    chrome.tabs.sendMessage(tabs[0].id, {message: "toggle customer dash"}, function(response) {});  
+	});
+});

@@ -148,3 +148,19 @@ div#customer-dashboard{
   height: 470px;
   padding: 0 5px 0 5px;
 }
+
+button#launch-customer-dash{
+  width: 200px;
+  height: 28px;
+  padding: 2px;
+  margin: 0 10px 0 10px;
+  background: #4A8DFB;
+  color: white;
+  border: 0px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+button#launch-customer-dash:hover{
+  cursor:pointer;
+}
