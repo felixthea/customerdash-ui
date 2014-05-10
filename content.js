@@ -8,7 +8,7 @@ $(document).ready(function(){
 					<input type='submit' value='Lookup Customer'><span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span>\
 				</form> \
 				<div id='customer-info'><h2>Customer Info</h2><div id='customer-info-body'></div></div> \
-				<div id='customer-charges'><h2>Customer Charges</h2><div id='customer-charges-body'></div></div> \
+				<div id='customer-orders'><h2>Customer Orders</h2><div id='customer-orders-body'></div></div> \
 			</div> \
 		</div>"
 	)
@@ -21,7 +21,7 @@ $(document).ready(function(){
 		event.preventDefault();
 
 		$('div#customer-info-body').html("");
-		$('div#customer-charges-body').html("");
+		$('div#customer-orders-body').html("");
 		$('#loading-icon').removeClass('hidden');
 
 		var customerEmail = $('input#customer-email').val();
@@ -33,18 +33,18 @@ $(document).ready(function(){
 
 			if(data.customer !== undefined) {
 				var $customerInfoUl = createCustomerInfo(data.customer);
-				var $chargesInfoUl = createChargesInfo(data.charges);
+				var $ordersInfoUl = createOrdersInfo(data.orders);
 
-				updateBody({customer: $customerInfoUl, charges: $chargesInfoUl});
+				updateBody({customer: $customerInfoUl, orders: $ordersInfoUl});
 			} else {
-				updateBody({customer: "No customer found", charges: "No charges found."});
+				updateBody({customer: "No customer found", orders: "No orders found."});
 			}
 		});
 	});
 
 	function updateBody(obj){
 		$('#customer-info-body').html(obj.customer);
-		$('#customer-charges-body').html(obj.charges);
+		$('#customer-orders-body').html(obj.orders);
 	};
 
 	function createCustomerInfo(customer) {
@@ -63,29 +63,29 @@ $(document).ready(function(){
 		return $table;
 	};
 
-	function createChargesInfo(charges) {
-		console.log(charges);
-		var $div = $('<div id="charges"></div>');
+	function createOrdersInfo(orders) {
+		console.log(orders);
+		var $div = $('<div id="orders"></div>');
 
-		$.each(charges, function(idx, charge){
-			var $table = createChargeInfo(charge);
+		$.each(orders, function(idx, order){
+			var $table = createOrderInfo(order);
 			$div.append($table);
 		})
 
 		return $div;
 	};
 
-	function createChargeInfo(charge) {
-		var chargeDate = new Date(charge.created_at);
-		var id = "<td class='info-title'>ID:</td><td>" + charge.id + "</td>";
-		var created = "<td class='info-title'>Date:</td><td>" + chargeDate.toDateString() + "</td>";
-		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + charge.subtotal_price + "</td>";
-		var total_price = "<td class='info-title'>Total:</td><td>$" + charge.total_price + "</td>";
-		var lineItems = "<td class='info-title'>Items:</td><td>" + $.map(charge.line_items, function(item, idx) { return item.name; }).join(", ") + "</td>";
+	function createOrderInfo(order) {
+		var orderDate = new Date(order.created_at);
+		var id = "<td class='info-title'>ID:</td><td><a href='" + order.url + "'>" + order.id + "</a></td>";
+		var created = "<td class='info-title'>Date:</td><td>" + orderDate.toDateString() + "</td>";
+		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + order.subtotal_price + "</td>";
+		var totalPrice = "<td class='info-title'>Total:</td><td>$" + order.total_price + "</td>";
+		var lineItems = "<td class='info-title'>Items:</td><td>" + $.map(order.line_items, function(item, idx) { return item.name; }).join(", ") + "</td>";
 
 		var $table = $("<table class='charge-info-list'></table>");
 
-		$.each([id, created, subtotal_price, total_price, lineItems], function(idx, val){
+		$.each([id, created, subtotal_price, totalPrice, lineItems], function(idx, val){
 			var $row = $("<tr>" + val + "</tr>");
 			$table.append($row);
 		});

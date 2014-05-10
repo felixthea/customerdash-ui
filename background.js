@@ -45,8 +45,8 @@ chrome.runtime.onConnect.addListener(function(port){
 					} else {
 						retrieveShopifyOrderIndex(customer.id)
 
-						.done(function(charges){
-							port.postMessage({customer: customer, charges: charges});
+						.done(function(orders){
+							port.postMessage({customer: customer, orders: orders});
 						});
 					}
 				})
