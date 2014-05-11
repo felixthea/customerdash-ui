@@ -36,6 +36,12 @@ chrome.runtime.onMessage.addListener(
 			},
 			"get_session_token": function(){
 				sendResponse({session_token: savedSessionToken()});
+			},
+			"update_order": function(){
+				updateShopifyOrder(msg.orderId, msg.newParams)
+				.done(function(order){
+					sendResponse(order);
+				})
 			}
 		};
 
@@ -80,6 +86,17 @@ function retrieveShopifyOrderIndex(customerId){
 		{
 			"session_token": savedSessionToken(),
 			"customer_id": customerId
+		}
+	)
+};
+
+function updateShopifyOrder(orderId, newParams){
+	return $.post(
+		API_BASE + '/orders/shopify/update',
+		{
+			"session_token": savedSessionToken(),
+			"order_id": orderId,
+			"new_params": newParams
 		}
 	)
 };

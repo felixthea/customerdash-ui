@@ -129,9 +129,10 @@ $(document).ready(function(){
 		var lineItems = "<td class='info-title'>Items:</td><td>" + items.join('<br>') + "</td>";
 		var fulfillmentStatus = "<td class='info-title'>Status:</td><td>" + order.fulfillment_status + "</td>";
 		var trackingNumbers = "<td class='info-title'>Tracking Numbers:</td><td> " + $.map(order.fulfillments, function(fulfillment, idx){ return fulfillment.tracking_number; }).join('<br>') + "</td>";
+		var note = "<td class='info-title'>Notes:</td><td id='order-note' data-id='" + order.id + "'>" + order.note + "</td>"; 
 		var $table = $("<table class='order-info-list'></table>");
 
-		$.each([id, created, subtotal_price, totalPrice, lineItems, fulfillmentStatus, trackingNumbers], function(idx, val){
+		$.each([id, created, subtotal_price, totalPrice, lineItems, fulfillmentStatus, trackingNumbers, note], function(idx, val){
 			var $row = $("<tr>" + val + "</tr>");
 			$table.append($row);
 		});
@@ -143,6 +144,23 @@ $(document).ready(function(){
 		$('#cd-body').toggleClass('hidden');
 		$('input#customer-email').focus();
 	});
+
+	$('#customer-dashboard').on('click', 'td#order-note', function(event){
+		var orderId = $(this).attr('data-id');
+		var originalNote = $(this).text();
+		$(this).attr("id","order-note-edit");
+		$(this).html("<input type='text' data-id='" + orderId + "' value='" + originalNote + "'>")
+	})
+
+	$('#customer-dashboard').on('focusout', 'td#order-note-edit input', function(event){
+		var $parentTd = $(this).parent();
+		var newNote = $(this).val();
+		var orderId = $parentTd.attr("data-id");
+
+		$parentTd.attr("id", "order-note");
+		$parentTd.text(newNote);
+		updateOrderNote(orderId, {note: newNote})
+	})
 
   checkIfLoggedIn(function(loggedIn){
     if (loggedIn){
@@ -231,6 +249,12 @@ $(document).ready(function(){
       callback(response.log_in_status);
     })
   };
+
+  function updateOrderNote (orderId, newParams) {
+  	chrome.runtime.sendMessage({type: "update_order", orderId: orderId, newParams: newParams}, function(response){
+      console.log(response);
+    })
+  }
 
   chrome.runtime.onMessage.addListener(function(msg, sender, response){
   	if (msg.message == "toggle customer dash") {
