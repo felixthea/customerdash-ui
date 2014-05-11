@@ -91,8 +91,10 @@ $(document).ready(function(){
 		var email = "<td class='info-title'>Email:</td><td class='truncate'>" + customer.email + "</td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
 		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
-		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
-		var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
+		// var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
+		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>$153.49</td>";
+		// var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
+		var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>4</td>";
 		var $table = $('<table id="customer-info-list"></table>');
 
 		$.each([name, email, created, note, lifetimeSpent, lifetimeOrderCount], function(idx, val){
@@ -125,11 +127,11 @@ $(document).ready(function(){
 		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + order.subtotal_price + "</td>";
 		var totalPrice = "<td class='info-title'>Total:</td><td>$" + order.total_price + "</td>";
 		var lineItems = "<td class='info-title'>Items:</td><td>" + items.join('<br>') + "</td>";
-		var fullfillmentStatus = "<td class='info-title'>Status:</td><td>" + order.fullfillment_status + "</td>";
-
+		var fulfillmentStatus = "<td class='info-title'>Status:</td><td>" + order.fulfillment_status + "</td>";
+		var trackingNumbers = "<td class='info-title'>Tracking Numbers:</td><td> " + $.map(order.fulfillments, function(fulfillment, idx){ return fulfillment.tracking_number; }).join('<br>') + "</td>";
 		var $table = $("<table class='order-info-list'></table>");
 
-		$.each([id, created, subtotal_price, totalPrice, lineItems, fullfillmentStatus], function(idx, val){
+		$.each([id, created, subtotal_price, totalPrice, lineItems, fulfillmentStatus, trackingNumbers], function(idx, val){
 			var $row = $("<tr>" + val + "</tr>");
 			$table.append($row);
 		});
