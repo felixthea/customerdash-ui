@@ -90,7 +90,7 @@ $(document).ready(function(){
 		var name = "<td class='info-title'>Name:</td><td>" + customer.first_name + " " + customer.last_name + "</td>";
 		var email = "<td class='info-title'>Email:</td><td class='truncate'>" + customer.email + "</td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
-		var note = "<td class='info-title'>Note:</td><td>" + customer.note + "</td>";
+		var note = "<td class='info-title'>Note:</td><td id='customer-note' data-id='" + customer.id + "'>" + customer.note + "</td>";
 		// var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
 		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>$153.49</td>";
 		// var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
@@ -147,10 +147,10 @@ $(document).ready(function(){
 
 	$('#customer-dashboard').on('click', 'td#order-note', function(event){
 		var orderId = $(this).attr('data-id');
-		var originalNote = $(this).text();
+		var originalNote = $(this).html();
 		$(this).attr("id","order-note-edit");
 		$(this).html("<input type='text' data-id='" + orderId + "' value='" + originalNote + "'>")
-	})
+	});
 
 	$('#customer-dashboard').on('focusout', 'td#order-note-edit input', function(event){
 		var $parentTd = $(this).parent();
@@ -159,8 +159,25 @@ $(document).ready(function(){
 
 		$parentTd.attr("id", "order-note");
 		$parentTd.text(newNote);
-		updateOrderNote(orderId, {note: newNote})
-	})
+		sendMessageToBg({type: "update_order", orderId: orderId, newParams: {note: newNote}})
+	});
+
+	$('#customer-dashboard').on('click', 'td#customer-note', function(event){
+		var customerId = $(this).attr('data-id');
+		var originalNote = $(this).html();
+		$(this).attr("id","customer-note-edit");
+		$(this).html("<input type='text' data-id='" + customerId + "' value='" + originalNote + "'>");
+	});
+
+	$('#customer-dashboard').on('focusout', 'td#customer-note-edit input', function(event){
+		var $parentTd = $(this).parent();
+		var newNote = $(this).val();
+		var customerId = $parentTd.attr("data-id");
+
+		$parentTd.attr("id", "customer-note");
+		$parentTd.text(newNote);
+		sendMessageToBg({type: "update_customer", customerId: customerId, newParams: {note: newNote}});
+	});
 
   checkIfLoggedIn(function(loggedIn){
     if (loggedIn){

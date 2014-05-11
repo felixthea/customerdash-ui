@@ -42,6 +42,12 @@ chrome.runtime.onMessage.addListener(
 				.done(function(order){
 					sendResponse(order);
 				})
+			},
+			"update_customer": function(){
+				updateShopifyCustomer(msg.customerId, msg.newParams)
+				.done(function(order){
+					sendResponse(order);
+				})
 			}
 		};
 
@@ -96,6 +102,17 @@ function updateShopifyOrder(orderId, newParams){
 		{
 			"session_token": savedSessionToken(),
 			"order_id": orderId,
+			"new_params": newParams
+		}
+	)
+};
+
+function updateShopifyCustomer(customerId, newParams){
+	return $.post(
+		API_BASE + '/customers/shopify/update',
+		{
+			"session_token": savedSessionToken(),
+			"customer_id": customerId,
 			"new_params": newParams
 		}
 	)
