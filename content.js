@@ -17,6 +17,7 @@ $(document).ready(function(){
 					      <br> \
 					      <input type='submit' id='submit' value='Sign In'> \
 					    </form> \
+					    <div class='error-msg'></div> \
 						</div> \
 						<div id='info' class='hidden'> \
 							<div id='search-container' class='group'> \
@@ -207,9 +208,11 @@ $(document).ready(function(){
       success: function(data,status,jqXHR){
         sendMessageToBg({type: "login", sessionToken: data["session_token"]});
         setLoggedInState();
+        console.log(data, status, jqXHR)
       },
       error: function(jqXHR,textStatus,errorThrown){
         console.log("error logging in");
+        $('div.error-msg').html(jqXHR.responseText)
       }
     });
   };
