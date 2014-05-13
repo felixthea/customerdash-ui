@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 
-	"name": "Customer Dash",
-	"description": "See your customer's order history when they send you a customer support email right in your Gmail account.",
+	"name": "Email Inbox CRM",
+	"description": "Shopify customer support right in your email inbox.",
 	"version": "0.1",
 
 	"permissions": [
@@ -14,14 +14,17 @@
   },
 
   "browser_action": {
-		"default_icon": "icon.png"
+		"default_icon": {
+			"38": "icon2_38x38.png",
+			"19": "icon2_19x19.png"
+		}
 	},
 
 	"web_accessible_resources": ["ajax-loader.gif"],
 
 	"content_scripts": [
 		{
-			"matches": ["https://mail.google.com/*", "https://news.ycombinator.com/"],
+			"matches": ["<all_urls>"],
 			"css": ["content.css"],
 			"js": ["jquery.min.js", "jquery.serializejson.min.js", "content.js"]
 		}
