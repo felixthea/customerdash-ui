@@ -17,6 +17,7 @@ $(document).ready(function(){
 					      <br> \
 					      <input type='submit' id='submit' value='Sign In'> \
 					    </form> \
+					    Have a question or comment?  Email <a href='mailto:felixthea@gmail.com'>felixthea@gmail.com</a> \
 					    <div class='error-msg'></div> \
 						</div> \
 						<div id='info' class='hidden'> \
