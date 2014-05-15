@@ -6,7 +6,7 @@
 	"version": "0.1",
 
 	"permissions": [
-		"http://localhost:3000/*"
+		"https://www.emailinboxcrm.com/*"
 	],
 
 	"background": {
