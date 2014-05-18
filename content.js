@@ -36,6 +36,11 @@ $(document).ready(function(){
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
 							<div id='customer-orders'><h2>Orders</h2><div id='customer-orders-body'></div></div> \
 						</div> \
+						<div id='trial-over' class='hidden'> \
+							<div class='trial-over-prompt'> \
+								Your 14 day free trial is complete.<br><a href='https://www.emailinboxcrm.com/plans'>Click here to choose a plan and continue using Email Inbox CRM</a> \
+							</div> \
+						</div> \
 					</div> \
 				</div> \
 		</div>"
@@ -181,10 +186,19 @@ $(document).ready(function(){
 		sendMessageToBg({type: "update_customer", customerId: customerId, newParams: {note: newNote}});
 	});
 
-  checkIfLoggedIn(function(loggedIn){
-    if (loggedIn){
+  checkIfLoggedIn(function(response){
+  	console.log(response);
+    if (response.log_in_status && (response.trial_days_left > 0 || response.good_standing)){
+    	console.log("here1");
+    	// user is logged in and they are still on their trial or their account is in good standing
     	setLoggedInState();
+    } else if (response.log_in_status && (response.trial_days_left <= 0 && !response.good_standing)) {
+    	console.log("here2");
+    	// user is logged in but their trial is over and their account is in bad standing meaning they
+    	// haven't signed up for a paid plan
+    	setPayToContinueState();
     } else {
+    	// user is logged out (did not check the status of their trial)
       setLoggedOutState();
     }
   });
@@ -253,6 +267,13 @@ $(document).ready(function(){
     clearBody();
   };
 
+  function setPayToContinueState() {
+  	$('#trial-over').removeClass('hidden');
+  	$logInForm.addClass('hidden');
+  	$logInHeader.addClass('hidden');
+    $logInDiv.addClass('hidden');
+  }
+
   function getSessionTokenFromBg (callback) {
     chrome.runtime.sendMessage({type: "get_session_token"}, function(response){
       callback(response.session_token);
@@ -267,7 +288,7 @@ $(document).ready(function(){
 
   function checkIfLoggedIn (callback) {
     chrome.runtime.sendMessage({type: "logged_in?"}, function(response){
-      callback(response.log_in_status);
+      callback(response);
     })
   };
 

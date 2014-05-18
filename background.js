@@ -28,7 +28,18 @@ chrome.runtime.onMessage.addListener(
 				sendResponse({status: "successfully logged in"})
 			},
 			"logged_in?": function(){
-				savedSessionToken() !== null ? sendResponse({log_in_status: true}) : sendResponse({log_in_status: false})
+				if (savedSessionToken() !== null) {
+					getUserStatus()
+					.done(function(response){
+						sendResponse({
+							log_in_status: true,
+							trial_days_left: response.trial_days_left,
+							good_standing: response.good_standing
+						})
+					})
+				} else {
+					sendResponse({log_in_status: false})
+				}
 			},
 			"logout": function(){
 				removeSessionToken();
@@ -55,26 +66,6 @@ chrome.runtime.onMessage.addListener(
   	return true;
   }
 );
-
-function retrieveStripeCustomer(customerEmail){
-	return $.get(
-		API_BASE + "/customers/stripe/show", 
-		{ 
-			"session_token": savedSessionToken(),
-			"customer_email": customerEmail
-		}
-	)
-};
-
-function retrieveStripeOrderIndex(customerId){
-	return $.get(
-		API_BASE + '/orders/stripe/index',
-		{
-			"session_token": savedSessionToken(),
-			"customer_id": customerId
-		}
-	)
-};
 
 function retrieveShopifyCustomer(customerEmail){
 	return $.get(
@@ -117,6 +108,15 @@ function updateShopifyCustomer(customerId, newParams){
 		}
 	)
 };
+
+function getUserStatus() {
+	return $.get(
+		API_BASE + '/users/status',
+		{
+			"session_token": savedSessionToken()
+		}
+	)
+}
 
 function saveSessionToken(sessionToken){
   window.localStorage.setItem('stripe-simple-cs', sessionToken)
