@@ -2,8 +2,8 @@
 	"manifest_version": 2,
 
 	"name": "Email Inbox CRM",
-	"description": "Shopify customer support right in your email inbox.",
-	"version": "0.1",
+	"description": "CRM for your Shopify business in your email inbox.",
+	"version": "0.2",
 
 	"permissions": [
 		"https://www.emailinboxcrm.com/*"
