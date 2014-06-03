@@ -214,6 +214,8 @@ $(document).ready(function(){
   function logIn () {
     var form = $('form#log-in');
     formData = form.serializeJSON();
+    formData["email_client"] = window.location.origin;
+
     $.ajax({
       type: "POST",
       url: API_BASE + "/session/login",
@@ -221,7 +223,6 @@ $(document).ready(function(){
       success: function(data,status,jqXHR){
         sendMessageToBg({type: "login", sessionToken: data["session_token"]});
         setLoggedInState();
-        console.log(data, status, jqXHR)
       },
       error: function(jqXHR,textStatus,errorThrown){
         console.log("error logging in");
