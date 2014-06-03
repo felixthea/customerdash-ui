@@ -98,10 +98,8 @@ $(document).ready(function(){
 		var email = "<td class='info-title'>Email:</td><td class='truncate'>" + customer.email + "</td>";
 		var created = "<td class='info-title'>Created:</td><td>" + customerDate.toDateString() + "</td>";
 		var note = "<td class='info-title'>Note:</td><td id='customer-note' data-id='" + customer.id + "'>" + customer.note + "</td>";
-		// var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
-		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>$153.49</td>";
-		// var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
-		var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>4</td>";
+		var lifetimeSpent = "<td class='info-title'>Total Spent:</td><td>" + customer.total_spent + "</td>";
+		var lifetimeOrderCount = "<td class='info-title'>Total Orders:</td><td>" + customer.order_count + "</td>";
 		var $table = $('<table id="customer-info-list"></table>');
 
 		$.each([name, email, created, note, lifetimeSpent, lifetimeOrderCount], function(idx, val){
