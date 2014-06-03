@@ -21,7 +21,7 @@ $(document).ready(function(){
 					    <div class='error-msg'></div> \
 						</div> \
 						<div id='info' class='hidden'> \
-							<div id='search-container' class='group'> \
+							<div id='search-container' class='customer-dashboard-clearfix'> \
 								<div id='sc-left'> \
 									Search \
 									<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
@@ -30,7 +30,7 @@ $(document).ready(function(){
 									<a href='#' id='log-out'>Log Out</a> \
 								</div> \
 							</div> \
-							<form id='query-customer' class='group'> \
+							<form id='query-customer' class='customer-dashboard-clearfix'> \
 								<input type='text' id='customer-email' placeholder='Enter customer email address'> \
 							</form> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
