@@ -78,7 +78,11 @@ div#customer-dashboard{
   margin: 5px 0 5px 0 !important;
 }
 
-#customer-dashboard input#customer-email{
+#customer-dashboard select {
+  width: auto !important;
+}
+
+#customer-dashboard input#customer-search-query{
   background: #FAFFBD !important;
 }
 
