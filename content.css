@@ -1,166 +1,168 @@
 .hidden{
-	display:none;
+	display:none !important;
 }
 
-.group:after{
-  content: "";
-  display: block;
-  clear: both;
+div#customer-dashboard .customer-dashboard-clearfix:after{
+  content: "" !important;
+  display: block !important;
+  clear: both !important;
 }
 
 div#customer-dashboard{
-  z-index: 9999;
-  float: left;
-  position: fixed;
-  top:110px;
-  right:20px;
-  background: #e5e5e5;
-  border: 1px solid black;
-  width: 250px;
-  font-size: 14px;
+  z-index: 9999 !important; 
+  float: left !important;
+  position: fixed !important;
+  top:110px !important;
+  right:20px !important;
+  background: #e5e5e5 !important;
+  border: 1px solid black !important;
+  width: 250px !important;
+  font-size: 14px !important;
   font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
-  -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75) !important;
+  -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75) !important;
+  box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75) !important;
 }
 
 #customer-dashboard h1{
-  margin:0;
-  padding:0;
-  font-size: 28pt;
-  padding-top: 5px;
-  text-align: center;
+  margin:0 !important;
+  padding:0 !important;
+  font-size: 28pt !important;
+  padding-top: 5px !important;
+  text-align: center !important;
 }
 
 #customer-dashboard input#submit{
-  background: #BA6A5D;
-  border: 1px solid #9C9A9B;
-  color: #FAFFBD;
-  width: 100px;
-  height: 30px;
-  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  background: #BA6A5D !important;
+  border: 1px solid #9C9A9B !important;
+  color: #FAFFBD !important;
+  width: 100px !important;
+  height: 30px !important;
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
+  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
+  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
 }
 
 #customer-dashboard a#log-out{
-  text-decoration: none;
-  color: #9C9A9B;
-  font-size: 14px;
-  font-weight: none;
-  margin-right: 5px;
+  text-decoration: none !important;
+  color: #9C9A9B !important;
+  font-size: 14px !important;
+  font-weight: none !important;
+  margin-right: 5px !important;
 }
 
 #customer-dashboard h2, #customer-dashboard #search-container{
-  padding: 0;
-  margin: 2px;
-  font-size: 16px;
-  background: #dbd6c5;
-  padding: 5px;
-  margin-left: -5px;
-  margin-right: -5px;
-  font-weight: bold;
-  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+  padding: 0 !important;
+  margin: 2px !important;
+  font-size: 16px !important;
+  background: #dbd6c5 !important;
+  padding: 5px !important;
+  margin-left: -5px !important;
+  margin-right: -5px !important;
+  font-weight: bold !important;
+  -webkit-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
+  -moz-box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
+  box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75) !important;
 }
 
 #customer-dashboard ul{
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 #customer-dashboard input{
-  font-size: 14px;
-  width: 95%;
-  height: 20px;
-  margin: 5px 0 5px 0;
+  font-size: 14px !important;
+  width: 95% !important;
+  height: 20px !important;
+  margin: 5px 0 5px 0 !important;
 }
 
-#customer-dashboard input#customer-email{
-  background: #FAFFBD;
+#customer-dashboard select {
+  width: auto !important;
+}
+
+#customer-dashboard input#customer-search-query{
+  background: #FAFFBD !important;
 }
 
 #customer-dashboard .info-title{
-  font-weight: bold; 
+  font-weight: bold !important; 
 }
 
 #customer-dashboard #cd-header{
-  width: 250px;
-  height: 60px;
-  background: #444444;
-  margin: 0;
-  padding: 0;
-  color: #dbd6c5;
-  -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75);
+  width: 250px !important;
+  height: 60px !important;
+  background: #444444 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #dbd6c5 !important;
+  -webkit-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75) !important;
+  -moz-box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75) !important;
+  box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.75) !important;
 }
 
 #customer-dashboard #cd-header:hover{
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 #customer-dashboard #cd-body{
-  margin-top: 5px;
-  /*padding: 5px;*/
-  height: 500px;
-  color: #444444;
-  overflow-y:auto;
-  background: white;
-  /*overflow-x:hidden;*/
+  margin-top: 5px !important;
+  height: 500px !important;
+  color: #444444 !important;
+  overflow-y: auto !important;
+  background: white !important;
 }
 
 #customer-dashboard .order-info-list{
-  padding: 5px 0 5px 0;
-  width: 100%;
-  border-bottom: 1px solid #9C9A9B;
+  padding: 5px 0 5px 0 !important;
+  width: 100% !important;
+  border-bottom: 1px solid #9C9A9B !important;
 }
 
 #customer-dashboard .order-info-list:last-child{
-  border:none;
+  border: none !important;
 }
 
 #customer-dashboard #customer-info, #customer-dashboard #customer-orders-body{
-  background: #F2F2F0;
+  background: #F2F2F0 !important;
 }
 
 #customer-dashboard #info-container{
-  padding: 0px 5px 0 5px;
-  background: white;
+  padding: 0px 5px 0 5px !important;
+  background: white !important;
 }
 
 #customer-dashboard form#query-customer{
-  text-align: center;
+  text-align: center !important;
 }
 
 #customer-dashboard #sc-left{
-  float: left;
+  float: left !important;
 }
 
 #customer-dashboard #sc-right{
-  float: right;
+  float: right !important;
 }
 
 #customer-dashboard div#log-in{
-  background: #F2F2F0;
-  height: 470px;
-  padding: 0 5px 0 5px;
+  background: #F2F2F0 !important;
+  height: 470px !important;
+  padding: 0 5px 0 5px !important;
 }
 
 button#launch-customer-dash{
-  width: 200px;
-  height: 28px;
-  padding: 2px;
-  margin: 0 10px 0 10px;
-  background: #4A8DFB;
-  color: white;
-  border: 0px;
-  font-weight: bold;
-  font-size: 14px;
+  width: 200px !important;
+  height: 28px !important;
+  padding: 2px !important;
+  margin: 0 10px 0 10px !important;
+  background: #4A8DFB !important;
+  color: white !important;
+  border: 0px !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
 }
 
 button#launch-customer-dash:hover{
-  cursor:pointer;
+  cursor:pointer !important;
 }

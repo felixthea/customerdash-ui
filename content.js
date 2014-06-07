@@ -1,5 +1,6 @@
 $(document).ready(function(){
-	var API_BASE = 'https://www.emailinboxcrm.com';
+	// var API_BASE = 'https://www.emailinboxcrm.com';
+	var API_BASE = 'http://localhost:3000'
 
 	$customerDashboard = $(
 		"<div id='customer-dashboard' class='hidden'> \
@@ -21,18 +22,23 @@ $(document).ready(function(){
 					    <div class='error-msg'></div> \
 						</div> \
 						<div id='info' class='hidden'> \
-							<div id='search-container' class='group'> \
+							<div id='search-container' class='customer-dashboard-clearfix'> \
 								<div id='sc-left'> \
 									Search \
+									<select id='search-scope'> \
+										<option value='email'>by Email</option> \
+										<option value='name'>by Name</option> \
+									</select> \
 									<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
 								</div> \
 								<div id='sc-right'> \
 									<a href='#' id='log-out'>Log Out</a> \
 								</div> \
 							</div> \
-							<form id='query-customer' class='group'> \
-								<input type='text' id='customer-email' placeholder='Enter customer email address'> \
+							<form id='query-customer' class='customer-dashboard-clearfix'> \
+								<input type='text' id='customer-search-query' placeholder='Enter customer email address'> \
 							</form> \
+							<div id='customer-results' class='hidden'><h2>Customer Results</h2><div id='customer-results-body'></div></div> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
 							<div id='customer-orders'><h2>Orders</h2><div id='customer-orders-body'></div></div> \
 						</div> \
@@ -55,31 +61,79 @@ $(document).ready(function(){
 	var $logInDiv = $('#customer-dashboard div#log-in');
 	var $searchForm = $('#customer-dashboard form#query-customer');
 
+	$('#cd-body').on('change', 'select#search-scope', function(event){
+		var selection = $(this).val();
+
+		if (selection == "name") {
+			$('input#customer-search-query').attr("placeholder", "ex: Bob Smith");
+		} else if(selection == "email") {
+			$('input#customer-search-query').attr("placeholder", "Enter customer's email address");
+		}
+	})
+
 	$('#cd-body').on('submit', 'form#query-customer', function(event){
 		event.preventDefault();
+		var selection = $('select#search-scope').val();
 
 		clearBody();
 		$('#loading-icon').removeClass('hidden');
 
-		var customerEmail = $('input#customer-email').val();
+		if ( selection == "email"){
+			var customerEmail = $('input#customer-search-query').val();
 
-		chrome.runtime.sendMessage({type: "retrieve_customer_with_orders", customerEmail: customerEmail}, function(data) {
-		  $('#loading-icon').addClass('hidden');
+			retrieveCustomerByEmailWithOrders(customerEmail)
+		} else if (selection == "name") {
+			var customerName = $('input#customer-search-query').val();
 
-			if(data.customer !== undefined && data.orders.length > 0) {
-				var $customerInfoTable = createCustomerInfo(data.customer);
-				var $ordersInfoTable = createOrdersInfo(data.orders);
+			chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", customerName: customerName}, function(data){
+				var customers = data.customers;
+				var customersList = $('<ul id="customer-list"></ul>');
 
-				updateBody({customer: $customerInfoTable, orders: $ordersInfoTable});
-			} else if (data.customer !== undefined) {
-				var $customerInfoTable = createCustomerInfo(data.customer);
+				if(customers.length > 1) {
+					
+					$.each(customers, function(idx, customer){
+						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
+					});
 
-				updateBody({customer: $customerInfoTable, orders: "No orders found."})
-			} else {
-				updateBody({customer: "No customer found", orders: "No orders found."});
-			}
-		});
+					$('div#customer-results').removeClass('hidden');
+					$('div#customer-results-body').html(customersList);
+					$('#loading-icon').addClass('hidden');
+				} else if (customers.length == 1) {
+					retrieveCustomerByEmailWithOrders(customers[0].email)
+				}
+
+			})
+		}
 	});
+
+	$('#cd-body').on('click', '#customer-list a', function(event){
+		event.preventDefault();
+		var customerEmail = $(this).attr("data-customer-email");
+		$('#loading-icon').removeClass('hidden');
+		retrieveCustomerByEmailWithOrders(customerEmail);
+	})
+
+	function retrieveCustomerByEmailWithOrders (customerEmail) {
+		chrome.runtime.sendMessage({type: "retrieve_customer_by_email_with_orders", customerEmail: customerEmail}, function(data) {
+			$('#loading-icon').addClass('hidden');
+			populateCustomerAndOrders(data);
+		});
+	}
+
+	function populateCustomerAndOrders (data){
+		if(data.customer !== undefined && data.orders.length > 0) {
+			var $customerInfoTable = createCustomerInfo(data.customer);
+			var $ordersInfoTable = createOrdersInfo(data.orders);
+
+			updateBody({customer: $customerInfoTable, orders: $ordersInfoTable});
+		} else if (data.customer !== undefined) {
+			var $customerInfoTable = createCustomerInfo(data.customer);
+
+			updateBody({customer: $customerInfoTable, orders: "No orders found."})
+		} else {
+			updateBody({customer: "No customer found", orders: "No orders found."});
+		}
+	}
 
 	function updateBody(obj){
 		$('#customer-info-body').html(obj.customer);
@@ -89,7 +143,8 @@ $(document).ready(function(){
 	function clearBody(){
 		$('div#customer-info-body').html("");
 		$('div#customer-orders-body').html("");
-	}
+		$('div#customer-results').addClass('hidden');
+	};
 
 	function createCustomerInfo(customer) {
 		console.log(customer);
@@ -147,7 +202,7 @@ $(document).ready(function(){
 
 	$('#cd-header').on('click', function(event){
 		$('#cd-body').toggleClass('hidden');
-		$('input#customer-email').focus();
+		$('input#customer-search-query').focus();
 	});
 
 	$('#customer-dashboard').on('click', 'td#order-note', function(event){
@@ -214,6 +269,8 @@ $(document).ready(function(){
   function logIn () {
     var form = $('form#log-in');
     formData = form.serializeJSON();
+    formData["email_client"] = window.location.origin;
+
     $.ajax({
       type: "POST",
       url: API_BASE + "/session/login",
@@ -221,7 +278,6 @@ $(document).ready(function(){
       success: function(data,status,jqXHR){
         sendMessageToBg({type: "login", sessionToken: data["session_token"]});
         setLoggedInState();
-        console.log(data, status, jqXHR)
       },
       error: function(jqXHR,textStatus,errorThrown){
         console.log("error logging in");
