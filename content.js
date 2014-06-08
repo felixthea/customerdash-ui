@@ -89,19 +89,23 @@ $(document).ready(function(){
 				var customers = data.customers;
 				var customersList = $('<ul id="customer-list"></ul>');
 
-				if(customers.length > 1) {
+				if (customers !== undefined) {
+					if(customers.length > 1) {
 					
-					$.each(customers, function(idx, customer){
-						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
-					});
+						$.each(customers, function(idx, customer){
+							customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
+						});
 
-					$('div#customer-results').removeClass('hidden');
-					$('div#customer-results-body').html(customersList);
+						$('div#customer-results').removeClass('hidden');
+						$('div#customer-results-body').html(customersList);
+						$('#loading-icon').addClass('hidden');
+					} else if (customers.length == 1) {
+						retrieveCustomerByEmailWithOrders(customers[0].email)
+					}
+				} else {
 					$('#loading-icon').addClass('hidden');
-				} else if (customers.length == 1) {
-					retrieveCustomerByEmailWithOrders(customers[0].email)
+					populateCustomerAndOrders({customer: undefined})
 				}
-
 			})
 		}
 	});

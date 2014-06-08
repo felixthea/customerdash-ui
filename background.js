@@ -13,7 +13,6 @@ chrome.runtime.onMessage.addListener(
 			"retrieve_customer_by_email_with_orders": function(){
 				retrieveShopifyCustomer(msg.customerEmail, "email")
 				.done(function(customer){
-					console.log(customer);
 					if (customer.status === 422) { 
 						sendResponse({customer: undefined});
 					} else {
@@ -27,7 +26,11 @@ chrome.runtime.onMessage.addListener(
 			"retrieve_customer_by_full_name": function(){
 				retrieveShopifyCustomer(msg.customerName, "full_name")
 				.done(function(customers){
-					sendResponse({customers: customers})
+					if (customers.status === 422) {
+						sendResponse({customers: undefined});
+					} else {
+						sendResponse({customers: customers});
+					}
 				})
 			},
 			"login": function(){
