@@ -3,7 +3,7 @@
 
 	"name": "Email Inbox CRM",
 	"description": "CRM for your Shopify business in your email inbox.",
-	"version": "0.4.1",
+	"version": "0.5.0",
 
 	"permissions": [
 		"https://www.emailinboxcrm.com/*"
