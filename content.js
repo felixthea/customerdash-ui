@@ -38,6 +38,10 @@ $(document).ready(function(){
 							<form id='query-customer' class='customer-dashboard-clearfix'> \
 								<input type='text' id='customer-search-query' placeholder='Enter customer email address'> \
 							</form> \
+							<form id='query-customer-by-name' class='customer-dashboard-clearfix'> \
+								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name'> \
+								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name'> \
+							</form> \
 							<div id='customer-results' class='hidden'><h2>Customer Results</h2><div id='customer-results-body'></div></div> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
 							<div id='customer-orders'><h2>Orders</h2><div id='customer-orders-body'></div></div> \
@@ -69,6 +73,36 @@ $(document).ready(function(){
 		} else if(selection == "email") {
 			$('input#customer-search-query').attr("placeholder", "Enter customer's email address");
 		}
+	})
+
+	$('#cd-body').on('submit', 'form#query-customer-by-name', function(event){
+		event.preventDefault();
+
+		var firstName = $('customer-search-query-first-name').val();
+		var lastName = $('customer-search-query-last-name').val();
+
+		chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", firstName: firstName, lastName: lastName}, function(data){
+			var customers = data.customers;
+			var customersList = $('<ul id="customer-list"></ul>');
+
+			if (customers !== undefined) {
+				if(customers.length > 1) {
+				
+					$.each(customers, function(idx, customer){
+						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
+					});
+
+					$('div#customer-results').removeClass('hidden');
+					$('div#customer-results-body').html(customersList);
+					$('#loading-icon').addClass('hidden');
+				} else if (customers.length == 1) {
+					retrieveCustomerByEmailWithOrders(customers[0].email)
+				}
+			} else {
+				$('#loading-icon').addClass('hidden');
+				populateCustomerAndOrders({customer: undefined})
+			}
+		})
 	})
 
 	$('#cd-body').on('submit', 'form#query-customer', function(event){

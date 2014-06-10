@@ -4,14 +4,8 @@ var API_BASE = 'https://www.emailinboxcrm.com';
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
   	var requestMap = {
-			"retrieve_customer": function(){
-				retrieveShopifyCustomer(msg.customerEmail)
-				.done(function(customer){
-					sendResponse(customer);
-				})
-			},
 			"retrieve_customer_by_email_with_orders": function(){
-				retrieveShopifyCustomer(msg.customerEmail, "email")
+				retrieveShopifyCustomerByEmail(msg.customerEmail)
 				.done(function(customer){
 					if (customer.status === 422) { 
 						sendResponse({customer: undefined});
@@ -24,7 +18,7 @@ chrome.runtime.onMessage.addListener(
 				})
 			},
 			"retrieve_customer_by_full_name": function(){
-				retrieveShopifyCustomer(msg.customerName, "full_name")
+				retrieveShopifyCustomerByFullName(msg.firstName, msg.lastName)
 				.done(function(customers){
 					if (customers.status === 422) {
 						sendResponse({customers: undefined});
@@ -77,16 +71,26 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-function retrieveShopifyCustomer(searchQuery, searchScope){
+function retrieveShopifyCustomerByEmail(email){
 	return $.get(
 		API_BASE + "/customers/shopify/show",
 		{
 			"session_token": savedSessionToken(),
-			"search_query": searchQuery,
-			"search_scope": searchScope
+			"email": email
 		}
 	)
 };
+
+function retrieveShopifyCustomerByFullName(firstName, lastName){
+	return $.get(
+		API_BASE + "/customers/shopify/by_name",
+		{
+			"session_token": savedSessionToken(),
+			"first_name": firstName,
+			"last_name": lastName
+		}
+	)
+}
 
 function retrieveShopifyOrderIndex(customerId){
 	return $.get(
