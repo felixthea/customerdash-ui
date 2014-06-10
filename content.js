@@ -35,12 +35,15 @@ $(document).ready(function(){
 									<a href='#' id='log-out'>Log Out</a> \
 								</div> \
 							</div> \
-							<form id='query-customer' class='customer-dashboard-clearfix'> \
-								<input type='text' id='customer-search-query' placeholder='Enter customer email address'> \
+							<form id='query-customer-by-email' class='customer-dashboard-clearfix'> \
+								<input type='text' id='customer-search-query-email' placeholder='Enter customer email address'> \
 							</form> \
 							<form id='query-customer-by-name' class='customer-dashboard-clearfix hidden'> \
 								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name'> \
 								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name'> \
+							</form> \
+							<form id='query-customer-by-order-num' class='customer-dashboard-clearfix'> \
+								<input type='text' id='customer-search-query-order-num' placeholder='Enter order number'> \
 							</form> \
 							<div id='customer-results' class='hidden'><h2>Customer Results</h2><div id='customer-results-body'></div></div> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
@@ -63,7 +66,10 @@ $(document).ready(function(){
 	var $customerDashInfo = $('#customer-dashboard #info');
 	var $logInHeader = $('#customer-dashboard h2#sign-in');
 	var $logInDiv = $('#customer-dashboard div#log-in');
-	var $searchForm = $('#customer-dashboard form#query-customer');
+	var $searchForms = [
+		$('#customer-dashboard form#query-customer-by-email'),
+		$('#customer-dashboard form#query-customer-by-name'),
+		$('#customer-dashboard form#customer-search-query-order-num')]
 
 	$('#cd-body').on('change', 'select#search-scope', function(event){
 		var selection = $(this).val();
@@ -93,6 +99,7 @@ $(document).ready(function(){
 
 	$('#cd-body').on('submit', 'form#query-customer-by-name', function(event){
 		event.preventDefault();
+		clearBody();
 
 		var firstName = $('customer-search-query-first-name').val();
 		var lastName = $('customer-search-query-last-name').val();
@@ -103,6 +110,7 @@ $(document).ready(function(){
 
 			if (customers !== undefined) {
 				if(customers.length > 1) {
+					// found multiple customers with matching name
 				
 					$.each(customers, function(idx, customer){
 						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
@@ -110,66 +118,57 @@ $(document).ready(function(){
 
 					$('div#customer-results').removeClass('hidden');
 					$('div#customer-results-body').html(customersList);
-					$('#loading-icon').addClass('hidden');
+					hideLoading();
 				} else if (customers.length == 1) {
+					// found exactly one customer with matching name
 					retrieveCustomerByEmailWithOrders(customers[0].email)
 				}
 			} else {
-				$('#loading-icon').addClass('hidden');
+				// found no customers with matching name
+				hideLoading();
 				populateCustomerAndOrders({customer: undefined})
 			}
 		})
-	})
+	});
 
-	$('#cd-body').on('submit', 'form#query-customer', function(event){
+	$('#cd-body').on('submit', 'form#query-customer-by-email', function(event){
 		event.preventDefault();
-		var selection = $('select#search-scope').val();
 
 		clearBody();
-		$('#loading-icon').removeClass('hidden');
+		showLoading();
 
-		if ( selection == "email"){
-			var customerEmail = $('input#customer-search-query').val();
+		var customerEmail = $('input#customer-search-query-email').val();
 
-			retrieveCustomerByEmailWithOrders(customerEmail)
-		} else if (selection == "name") {
-			var customerName = $('input#customer-search-query').val();
-
-			chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", customerName: customerName}, function(data){
-				var customers = data.customers;
-				var customersList = $('<ul id="customer-list"></ul>');
-
-				if (customers !== undefined) {
-					if(customers.length > 1) {
-					
-						$.each(customers, function(idx, customer){
-							customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
-						});
-
-						$('div#customer-results').removeClass('hidden');
-						$('div#customer-results-body').html(customersList);
-						$('#loading-icon').addClass('hidden');
-					} else if (customers.length == 1) {
-						retrieveCustomerByEmailWithOrders(customers[0].email)
-					}
-				} else {
-					$('#loading-icon').addClass('hidden');
-					populateCustomerAndOrders({customer: undefined})
-				}
-			})
-		}
+		retrieveCustomerByEmailWithOrders(customerEmail)
 	});
+
+	$('#cd-body').on('submit', 'form#query-customer-by-order-num', function(event){
+		event.preventDefault();
+
+		clearBody();
+		showLoading();
+
+		chrome.runtime.sendMessage({type: "retrieve_customer_by_order_num", orderNum: orderNum}, function(data) {
+			hideLoading();
+
+		})
+
+	})
+
+	function showLoading() { $('#loading-icon').removeClass('hidden'); };
+
+	function hideLoading() { $('#loading-icon').addClass('hidden'); };
 
 	$('#cd-body').on('click', '#customer-list a', function(event){
 		event.preventDefault();
 		var customerEmail = $(this).attr("data-customer-email");
-		$('#loading-icon').removeClass('hidden');
+		showLoading();
 		retrieveCustomerByEmailWithOrders(customerEmail);
 	})
 
 	function retrieveCustomerByEmailWithOrders (customerEmail) {
 		chrome.runtime.sendMessage({type: "retrieve_customer_by_email_with_orders", customerEmail: customerEmail}, function(data) {
-			$('#loading-icon').addClass('hidden');
+			hideLoading();
 			populateCustomerAndOrders(data);
 		});
 	}
@@ -197,6 +196,7 @@ $(document).ready(function(){
 	function clearBody(){
 		$('div#customer-info-body').html("");
 		$('div#customer-orders-body').html("");
+		$('div#customer-results').html("");
 		$('div#customer-results').addClass('hidden');
 	};
 
@@ -371,7 +371,7 @@ $(document).ready(function(){
     $customerDashInfo.addClass('hidden');
     $logInHeader.removeClass('hidden');
     $logInDiv.removeClass('hidden');
-    $searchForm[0].reset();
+    $.each($searchForms, function(idx, form) { form[0].reset(); })
     clearBody();
   };
 

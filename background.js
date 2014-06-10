@@ -27,6 +27,9 @@ chrome.runtime.onMessage.addListener(
 					}
 				})
 			},
+			"retrieve_customer_by_order_num": function(){
+				// todo write new call to get order and customer using the order num
+			},
 			"login": function(){
 				saveSessionToken(msg.sessionToken);
 				sendResponse({status: "successfully logged in"})
@@ -90,7 +93,7 @@ function retrieveShopifyCustomerByFullName(firstName, lastName){
 			"last_name": lastName
 		}
 	)
-}
+};
 
 function retrieveShopifyOrderIndex(customerId){
 	return $.get(
