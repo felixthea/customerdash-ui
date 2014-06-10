@@ -113,7 +113,7 @@ $(document).ready(function(){
 					// found multiple customers with matching name
 				
 					$.each(customers, function(idx, customer){
-						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.email + '</a></li>');
+						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.name + "(" + customer.email + ')</a></li>');
 					});
 
 					$('div#customer-results').removeClass('hidden');
@@ -152,8 +152,7 @@ $(document).ready(function(){
 			hideLoading();
 
 		})
-
-	})
+	});
 
 	function showLoading() { $('#loading-icon').removeClass('hidden'); };
 
