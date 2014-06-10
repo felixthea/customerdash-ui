@@ -38,7 +38,7 @@ $(document).ready(function(){
 							<form id='query-customer' class='customer-dashboard-clearfix'> \
 								<input type='text' id='customer-search-query' placeholder='Enter customer email address'> \
 							</form> \
-							<form id='query-customer-by-name' class='customer-dashboard-clearfix'> \
+							<form id='query-customer-by-name' class='customer-dashboard-clearfix hidden'> \
 								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name'> \
 								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name'> \
 							</form> \
@@ -67,13 +67,29 @@ $(document).ready(function(){
 
 	$('#cd-body').on('change', 'select#search-scope', function(event){
 		var selection = $(this).val();
+		var fields = ["#query-customer-by-name", "#query-customer-by-email", "#query-customer-by-order-num"]
 
 		if (selection == "name") {
-			$('input#customer-search-query').attr("placeholder", "ex: Bob Smith");
+			toggleSearchFields("#query-customer-by-name", fields);
 		} else if(selection == "email") {
-			$('input#customer-search-query').attr("placeholder", "Enter customer's email address");
-		}
-	})
+			toggleSearchFields("#query-customer-by-email", fields);
+		} else if(selection == "order_num") {
+			toggleSearchFields("#query-customer-by-order-num", fields);
+		};
+
+	});
+
+	function toggleSearchFields (activeSearch, fields) {
+		var turnOffFields = fields
+
+		$.each(turnOffFields, function(idx, field){
+			if (activeSearch == field) {
+				$(field).removeClass('hidden');
+			} else {
+				$(field).addClass('hidden');
+			}
+		});
+	};
 
 	$('#cd-body').on('submit', 'form#query-customer-by-name', function(event){
 		event.preventDefault();
