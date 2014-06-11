@@ -42,14 +42,14 @@ $(document).ready(function(){
 							</form> \
 							<form id='query-customer-by-name' class='customer-dashboard-clearfix hidden'> \
 								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name (optional)'> \
-								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name'> \
+								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name (optional)'> \
 								<input type='submit' value='Search'> \
 							</form> \
 							<form id='query-customer-by-order-num' class='customer-dashboard-clearfix hidden'> \
 								<input type='text' id='customer-search-query-order-num' placeholder='Enter order number'> \
 								<input type='submit' value='Search'> \
 							</form> \
-							<div id='customer-results' class='hidden'><h2>Customer Results</h2><div id='customer-results-body'></div></div> \
+							<div id='customer-results' class='hidden'><h2>Select a Customer</h2><div id='customer-results-body'></div></div> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
 							<div id='customer-orders'><h2>Orders</h2><div id='customer-orders-body'></div></div> \
 						</div> \
@@ -78,6 +78,8 @@ $(document).ready(function(){
 	$('#cd-body').on('change', 'select#search-scope', function(event){
 		var selection = $(this).val();
 		var fields = ["#query-customer-by-name", "#query-customer-by-email", "#query-customer-by-order-num"]
+
+		$.each(fields, function(idx, field){ $(field)[0].reset(); });
 
 		if (selection == "name") {
 			toggleSearchFields("#query-customer-by-name", fields);
@@ -159,9 +161,11 @@ $(document).ready(function(){
 		clearBody();
 		showLoading();
 
+		var orderNum = $('#customer-search-query-order-num').val();
+
 		chrome.runtime.sendMessage({type: "retrieve_customer_by_order_num", orderNum: orderNum}, function(data) {
 			hideLoading();
-
+			retrieveCustomerByEmailWithOrders(data.customer.email)
 		})
 	});
 
@@ -246,7 +250,7 @@ $(document).ready(function(){
 			return item.name + " (" + item.quantity + ")";
 		});
 
-		var id = "<td class='info-title'>ID:</td><td><a href='" + order.url + "'>" + order.id + "</a></td>";
+		var id = "<td class='info-title'>ID:</td><td><a href='" + order.url + "'>" + order.order_number + "</a></td>";
 		var created = "<td class='info-title'>Date:</td><td>" + orderDate.toDateString() + "</td>";
 		var subtotal_price = "<td class='info-title'>Subtotal:</td><td>$" + order.subtotal_price + "</td>";
 		var totalPrice = "<td class='info-title'>Total:</td><td>$" + order.total_price + "</td>";

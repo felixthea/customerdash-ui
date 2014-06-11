@@ -32,8 +32,9 @@ chrome.runtime.onMessage.addListener(
 				retrieveShopifyCustomerByOrderNum(msg.orderNum)
 				.done(function(customer){
 					if (customer.status === 422) {
-						sendResponse({customers: undefined});
+						sendResponse({customer: undefined});
 					} else {
+						sendResponse({customer: customer})
 					}
 				})
 			},
@@ -104,7 +105,7 @@ function retrieveShopifyCustomerByFullName(firstName, lastName){
 
 function retrieveShopifyCustomerByOrderNum(orderNum){
 	return $.get(
-		API_BASE + "customers/shopify/by_order_num",
+		API_BASE + "/customers/shopify/by_order_num",
 		{
 			"session_token": savedSessionToken(),
 			"order_num": orderNum
