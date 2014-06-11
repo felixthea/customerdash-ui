@@ -1,5 +1,5 @@
-var API_BASE = 'https://www.emailinboxcrm.com';
-// var API_BASE = 'http://localhost:3000'
+// var API_BASE = 'https://www.emailinboxcrm.com';
+var API_BASE = 'http://localhost:3000'
 
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
@@ -29,6 +29,13 @@ chrome.runtime.onMessage.addListener(
 			},
 			"retrieve_customer_by_order_num": function(){
 				// todo write new call to get order and customer using the order num
+				retrieveShopifyCustomerByOrderNum(msg.orderNum)
+				.done(function(customer){
+					if (customer.status === 422) {
+						sendResponse({customers: undefined});
+					} else {
+					}
+				})
 			},
 			"login": function(){
 				saveSessionToken(msg.sessionToken);
@@ -76,7 +83,7 @@ chrome.runtime.onMessage.addListener(
 
 function retrieveShopifyCustomerByEmail(email){
 	return $.get(
-		API_BASE + "/customers/shopify/show",
+		API_BASE + "/customers/shopify/by_email",
 		{
 			"session_token": savedSessionToken(),
 			"email": email
@@ -94,6 +101,16 @@ function retrieveShopifyCustomerByFullName(firstName, lastName){
 		}
 	)
 };
+
+function retrieveShopifyCustomerByOrderNum(orderNum){
+	return $.get(
+		API_BASE + "customers/shopify/by_order_num",
+		{
+			"session_token": savedSessionToken(),
+			"order_num": orderNum
+		}
+	)
+}
 
 function retrieveShopifyOrderIndex(customerId){
 	return $.get(

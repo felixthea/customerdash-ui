@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	var API_BASE = 'https://www.emailinboxcrm.com';
-	// var API_BASE = 'http://localhost:3000'
+	// var API_BASE = 'https://www.emailinboxcrm.com';
+	var API_BASE = 'http://localhost:3000'
 
 	$customerDashboard = $(
 		"<div id='customer-dashboard' class='hidden'> \
@@ -28,6 +28,7 @@ $(document).ready(function(){
 									<select id='search-scope'> \
 										<option value='email'>by Email</option> \
 										<option value='name'>by Name</option> \
+										<option value='order_num'>by Order #</option> \
 									</select> \
 									<span id='loading-icon' class='hidden'><img src='" + chrome.extension.getURL('ajax-loader.gif') + "'></span> \
 								</div> \
@@ -37,13 +38,16 @@ $(document).ready(function(){
 							</div> \
 							<form id='query-customer-by-email' class='customer-dashboard-clearfix'> \
 								<input type='text' id='customer-search-query-email' placeholder='Enter customer email address'> \
+								<input type='submit' value='Search'> \
 							</form> \
 							<form id='query-customer-by-name' class='customer-dashboard-clearfix hidden'> \
-								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name'> \
+								<input type='text' id='customer-search-query-first-name' placeholder='Enter first name (optional)'> \
 								<input type='text' id='customer-search-query-last-name' placeholder='Enter last name'> \
+								<input type='submit' value='Search'> \
 							</form> \
-							<form id='query-customer-by-order-num' class='customer-dashboard-clearfix'> \
+							<form id='query-customer-by-order-num' class='customer-dashboard-clearfix hidden'> \
 								<input type='text' id='customer-search-query-order-num' placeholder='Enter order number'> \
+								<input type='submit' value='Search'> \
 							</form> \
 							<div id='customer-results' class='hidden'><h2>Customer Results</h2><div id='customer-results-body'></div></div> \
 							<div id='customer-info'><h2>Customer</h2><div id='customer-info-body'></div></div> \
@@ -99,22 +103,29 @@ $(document).ready(function(){
 
 	$('#cd-body').on('submit', 'form#query-customer-by-name', function(event){
 		event.preventDefault();
+		console.log("query customer by name");
 		clearBody();
+		showLoading();
 
-		var firstName = $('customer-search-query-first-name').val();
-		var lastName = $('customer-search-query-last-name').val();
+		var firstName = $('#customer-search-query-first-name').val();
+		var lastName = $('#customer-search-query-last-name').val();
 
 		chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", firstName: firstName, lastName: lastName}, function(data){
+			console.log(data);
 			var customers = data.customers;
-			var customersList = $('<ul id="customer-list"></ul>');
+			var customersList;
 
 			if (customers !== undefined) {
 				if(customers.length > 1) {
 					// found multiple customers with matching name
-				
+
+					customersList = $('<ul id="customer-list"></ul>');
 					$.each(customers, function(idx, customer){
-						customersList.append('<li><a data-customer-email="' + customer.email + '" href="#">' + customer.name + "(" + customer.email + ')</a></li>');
+						customersList.append(
+							'<li><a data-customer-email="' + customer.email + '" href="#">' + customer.first_name + " " + customer.last_name + " (" + customer.email + ')</a></li>');
 					});
+
+					console.log(customersList);
 
 					$('div#customer-results').removeClass('hidden');
 					$('div#customer-results-body').html(customersList);
@@ -195,7 +206,7 @@ $(document).ready(function(){
 	function clearBody(){
 		$('div#customer-info-body').html("");
 		$('div#customer-orders-body').html("");
-		$('div#customer-results').html("");
+		$('div#customer-results-body').html("");
 		$('div#customer-results').addClass('hidden');
 	};
 
