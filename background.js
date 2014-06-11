@@ -5,15 +5,12 @@ chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
   	var requestMap = {
 			"retrieve_customer_by_email_with_orders": function(){
-				retrieveShopifyCustomerByEmail(msg.customerEmail)
-				.done(function(customer){
-					if (customer.status === 422) { 
+				retrieveShopifyCustomerAndOrdersByEmail(msg.customerEmail)
+				.done(function(data){
+					if (data.status === 422){
 						sendResponse({customer: undefined});
 					} else {
-						retrieveShopifyOrderIndex(customer.id)
-						.done(function(orders){
-							sendResponse({customer: customer, orders: orders});
-						});
+						sendResponse({customer: data.customer, orders: data.orders});
 					}
 				})
 			},
@@ -27,14 +24,13 @@ chrome.runtime.onMessage.addListener(
 					}
 				})
 			},
-			"retrieve_customer_by_order_num": function(){
-				// todo write new call to get order and customer using the order num
-				retrieveShopifyCustomerByOrderNum(msg.orderNum)
-				.done(function(customer){
-					if (customer.status === 422) {
+			"retrieve_customer_with_orders_by_order_num": function(){
+				retrieveShopifyCustomerAndOrdersByOrderNum(msg.orderNum)
+				.done(function(data){
+					if (data.status === 422) {
 						sendResponse({customer: undefined});
 					} else {
-						sendResponse({customer: customer})
+						sendResponse({customer: data.customer, orders: data.orders}) // @todo: sending both customer and orders but consumer doesn't expect orders
 					}
 				})
 			},
@@ -92,6 +88,16 @@ function retrieveShopifyCustomerByEmail(email){
 	)
 };
 
+function retrieveShopifyCustomerAndOrdersByEmail(email){
+	return $.get(
+		API_BASE + "/orders/shopify/by_email",
+		{
+			"session_token": savedSessionToken(),
+			"email": email
+		}
+	)
+}
+
 function retrieveShopifyCustomerByFullName(firstName, lastName){
 	return $.get(
 		API_BASE + "/customers/shopify/by_name",
@@ -106,6 +112,16 @@ function retrieveShopifyCustomerByFullName(firstName, lastName){
 function retrieveShopifyCustomerByOrderNum(orderNum){
 	return $.get(
 		API_BASE + "/customers/shopify/by_order_num",
+		{
+			"session_token": savedSessionToken(),
+			"order_num": orderNum
+		}
+	)
+}
+
+function retrieveShopifyCustomerAndOrdersByOrderNum(orderNum){
+	return $.get(
+		API_BASE + "/orders/shopify/by_order_num",
 		{
 			"session_token": savedSessionToken(),
 			"order_num": orderNum

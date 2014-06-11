@@ -163,9 +163,9 @@ $(document).ready(function(){
 
 		var orderNum = $('#customer-search-query-order-num').val();
 
-		chrome.runtime.sendMessage({type: "retrieve_customer_by_order_num", orderNum: orderNum}, function(data) {
+		chrome.runtime.sendMessage({type: "retrieve_customer_with_orders_by_order_num", orderNum: orderNum}, function(data) {
 			hideLoading();
-			retrieveCustomerByEmailWithOrders(data.customer.email)
+			populateCustomerAndOrders(data);
 		})
 	});
 
