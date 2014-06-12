@@ -78,16 +78,6 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-function retrieveShopifyCustomerByEmail(email){
-	return $.get(
-		API_BASE + "/customers/shopify/by_email",
-		{
-			"session_token": savedSessionToken(),
-			"email": email
-		}
-	)
-};
-
 function retrieveShopifyCustomerAndOrdersByEmail(email){
 	return $.get(
 		API_BASE + "/orders/shopify/by_email",
