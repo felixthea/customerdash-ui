@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	// var API_BASE = 'https://www.emailinboxcrm.com';
-	var API_BASE = 'http://localhost:3000'
+	var API_BASE = 'https://www.emailinboxcrm.com';
+	// var API_BASE = 'http://localhost:3000'
 
 	$customerDashboard = $(
 		"<div id='customer-dashboard' class='hidden'> \
