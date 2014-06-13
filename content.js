@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	var API_BASE = 'https://www.emailinboxcrm.com';
-	// var API_BASE = 'http://localhost:3000'
+	// var API_BASE = 'https://www.emailinboxcrm.com';
+	var API_BASE = 'http://localhost:3000'
 
 	$customerDashboard = $(
 		"<div id='customer-dashboard' class='hidden'> \
@@ -113,7 +113,6 @@ $(document).ready(function(){
 		var lastName = $('#customer-search-query-last-name').val();
 
 		chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", firstName: firstName, lastName: lastName}, function(data){
-			console.log(data);
 			var customers = data.customers;
 			var customersList;
 
@@ -124,7 +123,7 @@ $(document).ready(function(){
 					customersList = $('<ul id="customer-list"></ul>');
 					$.each(customers, function(idx, customer){
 						customersList.append(
-							'<li><a data-customer-email="' + customer.email + '" href="#">' + customer.first_name + " " + customer.last_name + " (" + customer.email + ')</a></li>');
+							'<li><a data-customer-id="' + customer.id + '" href="#">' + customer.first_name + " " + customer.last_name + " (" + customer.email + ')</a></li>');
 					});
 
 					console.log(customersList);
@@ -175,9 +174,13 @@ $(document).ready(function(){
 
 	$('#cd-body').on('click', '#customer-list a', function(event){
 		event.preventDefault();
-		var customerEmail = $(this).attr("data-customer-email");
+		var customerId = $(this).attr("data-customer-id");
 		showLoading();
-		retrieveCustomerByEmailWithOrders(customerEmail);
+		chrome.runtime.sendMessage({type: "get_customer_and_orders_from_storage", customerId: customerId}, function(customerWithOrders){
+			// expect this format: {"customer": {}, "orders": {}}
+			populateCustomerAndOrders(customerWithOrders);
+		})
+		// retrieveCustomerByEmailWithOrders(customerEmail);
 	})
 
 	function retrieveCustomerByEmailWithOrders (customerEmail) {
@@ -310,11 +313,9 @@ $(document).ready(function(){
   checkIfLoggedIn(function(response){
   	console.log(response);
     if (response.log_in_status && (response.trial_days_left > 0 || response.good_standing)){
-    	console.log("here1");
     	// user is logged in and they are still on their trial or their account is in good standing
     	setLoggedInState();
     } else if (response.log_in_status && (response.trial_days_left <= 0 && !response.good_standing)) {
-    	console.log("here2");
     	// user is logged in but their trial is over and their account is in bad standing meaning they
     	// haven't signed up for a paid plan
     	setPayToContinueState();

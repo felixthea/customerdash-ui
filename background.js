@@ -1,5 +1,5 @@
-var API_BASE = 'https://www.emailinboxcrm.com';
-// var API_BASE = 'http://localhost:3000'
+// var API_BASE = 'https://www.emailinboxcrm.com';
+var API_BASE = 'http://localhost:3000'
 
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {
@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener(
 					if (customers.status === 422) {
 						sendResponse({customers: undefined});
 					} else {
+						storeCustomers(customers)
 						sendResponse({customers: customers});
 					}
 				})
@@ -34,6 +35,14 @@ chrome.runtime.onMessage.addListener(
 					}
 				})
 			},
+			"get_customer_and_orders_from_storage": function(customerId){
+				retrieveShopifyCustomerAndOrdersFromStorage()
+				.done(function(customersAndOrders){
+					parsedCustomersAndOrders = JSON.parse(customersAndOrders);
+					// iterate through parsedCustomersAndOrders to find the customer.id == customerId then return in this format:
+					// {"customer": {}, "orders": {}}
+				})
+			}
 			"login": function(){
 				saveSessionToken(msg.sessionToken);
 				sendResponse({status: "successfully logged in"})
@@ -99,32 +108,12 @@ function retrieveShopifyCustomerByFullName(firstName, lastName){
 	)
 };
 
-function retrieveShopifyCustomerByOrderNum(orderNum){
-	return $.get(
-		API_BASE + "/customers/shopify/by_order_num",
-		{
-			"session_token": savedSessionToken(),
-			"order_num": orderNum
-		}
-	)
-}
-
 function retrieveShopifyCustomerAndOrdersByOrderNum(orderNum){
 	return $.get(
 		API_BASE + "/orders/shopify/by_order_num",
 		{
 			"session_token": savedSessionToken(),
 			"order_num": orderNum
-		}
-	)
-}
-
-function retrieveShopifyOrderIndex(customerId){
-	return $.get(
-		API_BASE + '/orders/shopify/index',
-		{
-			"session_token": savedSessionToken(),
-			"customer_id": customerId
 		}
 	)
 };
@@ -161,7 +150,7 @@ function getUserStatus() {
 }
 
 function saveSessionToken(sessionToken){
-  window.localStorage.setItem('stripe-simple-cs', sessionToken)
+  window.localStorage.setItem('stripe-simple-cs', sessionToken);
 };
 
 function removeSessionToken() {
@@ -171,6 +160,14 @@ function removeSessionToken() {
 function savedSessionToken(){
   return window.localStorage.getItem('stripe-simple-cs');
 };
+
+function storeCustomers(customers){
+	window.localStorage.setItem('customer-dash-customers-and-orders', JSON.stringify(customers));
+};
+
+function retrieveShopifyCustomerAndOrdersFromStorage(){
+	return window.localStorage.getItem('customer-dash-customers-and-orders');
+}
 
 chrome.browserAction.onClicked.addListener(function(tab){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
