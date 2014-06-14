@@ -113,7 +113,7 @@ $(document).ready(function(){
 		var lastName = $('#customer-search-query-last-name').val();
 
 		chrome.runtime.sendMessage({type: "retrieve_customer_by_full_name", firstName: firstName, lastName: lastName}, function(data){
-			var customers = data.customers;
+			var customers = _.values(data.customers);
 			var customersList;
 
 			if (customers !== undefined) {
@@ -125,8 +125,6 @@ $(document).ready(function(){
 						customersList.append(
 							'<li><a data-customer-id="' + customer.id + '" href="#">' + customer.first_name + " " + customer.last_name + " (" + customer.email + ')</a></li>');
 					});
-
-					console.log(customersList);
 
 					$('div#customer-results').removeClass('hidden');
 					$('div#customer-results-body').html(customersList);
@@ -175,7 +173,6 @@ $(document).ready(function(){
 	$('#cd-body').on('click', '#customer-list a', function(event){
 		event.preventDefault();
 		var customerId = $(this).attr("data-customer-id");
-		showLoading();
 		chrome.runtime.sendMessage({type: "get_customer_and_orders_from_storage", customerId: customerId}, function(customerWithOrders){
 			// expect this format: {"customer": {}, "orders": {}}
 			populateCustomerAndOrders(customerWithOrders);

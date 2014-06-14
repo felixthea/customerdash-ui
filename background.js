@@ -35,14 +35,17 @@ chrome.runtime.onMessage.addListener(
 					}
 				})
 			},
-			"get_customer_and_orders_from_storage": function(customerId){
-				retrieveShopifyCustomerAndOrdersFromStorage()
-				.done(function(customersAndOrders){
-					parsedCustomersAndOrders = JSON.parse(customersAndOrders);
-					// iterate through parsedCustomersAndOrders to find the customer.id == customerId then return in this format:
-					// {"customer": {}, "orders": {}}
-				})
-			}
+			"get_customer_and_orders_from_storage": function(){
+				var customersAndOrders = retrieveShopifyCustomerAndOrdersFromStorage();
+				console.log(customersAndOrders);
+				console.log(msg.customerId);
+
+				var customer = customersAndOrders[msg.customerId];
+				var orders = customer.orders;
+				delete customer.orders;
+
+				sendResponse({customer: customer, orders: orders})
+			},
 			"login": function(){
 				saveSessionToken(msg.sessionToken);
 				sendResponse({status: "successfully logged in"})
@@ -166,7 +169,7 @@ function storeCustomers(customers){
 };
 
 function retrieveShopifyCustomerAndOrdersFromStorage(){
-	return window.localStorage.getItem('customer-dash-customers-and-orders');
+	return JSON.parse(window.localStorage.getItem('customer-dash-customers-and-orders'));
 }
 
 chrome.browserAction.onClicked.addListener(function(tab){

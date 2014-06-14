@@ -10,7 +10,7 @@
 	],
 
 	"background": {
-    "scripts": ["jquery.min.js", "background.js"]
+    "scripts": ["jquery.min.js", "background.js", "underscore-min.js"]
   },
 
   "browser_action": {
@@ -26,7 +26,7 @@
 		{
 			"matches": ["<all_urls>"],
 			"css": ["content.css"],
-			"js": ["jquery.min.js", "jquery.serializejson.min.js", "content.js"]
+			"js": ["jquery.min.js", "jquery.serializejson.min.js", "underscore-min.js", "content.js"]
 		}
 	]
 }
