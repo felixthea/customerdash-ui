@@ -1,4 +1,4 @@
-var API_BASE = 'https://www.emailinboxcrm.com';
+var API_BASE = 'https://stormy-fortress-3179.herokuapp.com/';
 
 chrome.runtime.onMessage.addListener(
   function(msg, sender, sendResponse) {

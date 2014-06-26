@@ -1,4 +1,8 @@
-.hidden{
+div#customer-dashboard.hidden{
+  display: none !important;
+}
+
+div#customer-dashboard .hidden{
 	display:none !important;
 }
 
